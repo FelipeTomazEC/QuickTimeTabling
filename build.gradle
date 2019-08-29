@@ -1,0 +1,33 @@
+plugins {
+    id 'application'
+    id 'org.openjfx.javafxplugin' version '0.0.7'
+}
+
+group 'br.ufop.tomaz'
+version '1.0-SNAPSHOT'
+
+sourceCompatibility = 11
+targetCompatibility = 11
+
+javafx {
+    version = "12"
+    modules = [ 'javafx.controls', 'javafx.fxml', 'javafx.media']
+}
+
+applicationDefaultJvmArgs = ["--add-exports=javafx.graphics/com.sun.javafx.stage=ALL-UNNAMED",
+                             "--add-opens=javafx.controls/javafx.scene.control.skin=ALL-UNNAMED",
+                             "--add-exports=javafx.graphics/com.sun.javafx.scene=ALL-UNNAMED"
+]
+
+repositories {
+    mavenCentral()
+    jcenter()
+}
+
+dependencies {
+    testCompile group: 'junit', name: 'junit', version: '4.12'
+    // https://mvnrepository.com/artifact/org.hibernate.orm/hibernate-core
+    compile group: 'org.hibernate.orm', name: 'hibernate-core', version: '6.0.0.Alpha2'
+    // https://mvnrepository.com/artifact/com.h2database/h2
+    compile group: 'com.h2database', name: 'h2', version: '1.4.199'
+}
