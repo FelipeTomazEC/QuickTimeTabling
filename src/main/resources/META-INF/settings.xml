@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<settings>
+    <days>
+        <day>Monday</day>
+        <day>Tuesday</day>
+        <day>Wednesday</day>
+        <day>Thursday</day>
+        <day>Friday</day>
+    </days>
+    <times>
+        <time>13:30</time>
+        <time>14:20</time>
+        <time>15:20</time>
+        <time>16:10</time>
+        <time>18:50</time>
+        <time>19:40</time>
+        <time>20:45</time>
+        <time>21:35</time>
+    </times>
+</settings>

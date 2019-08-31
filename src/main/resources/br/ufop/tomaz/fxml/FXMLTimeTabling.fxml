@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0"
+            prefWidth="600.0" stylesheets="@../styles/screensMainStyle.css" xmlns="http://javafx.com/javafx/8.0.171"
+            xmlns:fx="http://javafx.com/fxml/1" fx:controller="br.ufop.tomaz.controller.FXMLTimeTablingController">
+    <top>
+        <VBox prefHeight="100.0" prefWidth="800.0" BorderPane.alignment="CENTER">
+            <HBox alignment="TOP_RIGHT">
+                <MenuBar fx:id="menubar" maxWidth="1.7976931348623157E308" prefWidth="776.0" HBox.hgrow="ALWAYS">
+                    <Menu mnemonicParsing="false" text="File">
+                        <MenuItem mnemonicParsing="false" text="Close"/>
+                    </Menu>
+                    <Menu mnemonicParsing="false" text="Edit">
+                        <MenuItem mnemonicParsing="false" text="Delete"/>
+                    </Menu>
+                    <Menu mnemonicParsing="false" text="Help">
+                        <MenuItem mnemonicParsing="false" text="About"/>
+                    </Menu>
+                </MenuBar>
+                <Button fx:id="btnClose" alignment="CENTER_RIGHT" mnemonicParsing="false" onAction="#close"
+                        styleClass="closeButton" text="X"/>
+            </HBox>
+            <Label maxWidth="1.7976931348623157E308" styleClass="screen-label" text="TIMETABLING"/>
+        </VBox>
+    </top>
+    <bottom>
+        <ButtonBar prefHeight="40.0" prefWidth="200.0" styleClass="buttonBar" BorderPane.alignment="CENTER">
+            <buttons>
+                <Button fx:id="btnValidate" mnemonicParsing="false" styleClass="button-buttonBar" text="Validate"/>
+                <Button fx:id="btnUndo" mnemonicParsing="false" styleClass="button-buttonBar" text="Undo"/>
+                <Button fx:id="btnRedo" mnemonicParsing="false" styleClass="button-buttonBar" text="Redo"/>
+                <Button fx:id="btnExport" mnemonicParsing="false" styleClass="button-buttonBar" text="Export"/>
+            </buttons>
+            <padding>
+                <Insets right="10.0"/>
+            </padding>
+        </ButtonBar>
+    </bottom>
+    <left>
+        <VBox prefHeight="410.0" prefWidth="190.0" BorderPane.alignment="CENTER">
+            <Label text="Resource"/>
+            <ComboBox fx:id="cbmResource" prefHeight="25.0" prefWidth="242.0"/>
+            <TextField fx:id="edtSearch" promptText="Search">
+                <VBox.margin>
+                    <Insets top="5.0"/>
+                </VBox.margin>
+            </TextField>
+            <ListView fx:id="resourcesListView" prefHeight="240.0" prefWidth="236.0" VBox.vgrow="ALWAYS">
+                <VBox.margin>
+                    <Insets top="10.0"/>
+                </VBox.margin>
+            </ListView>
+            <BorderPane.margin>
+                <Insets left="10.0" right="10.0" top="10.0"/>
+            </BorderPane.margin>
+        </VBox>
+    </left>
+    <center>
+        <VBox fx:id="rightContent" prefHeight="200.0" prefWidth="100.0" BorderPane.alignment="CENTER">
+            <Label text="Violated Constraints"/>
+            <TableView fx:id="violatedConstraintsTableView" minHeight="100.0" prefHeight="117.0" prefWidth="534.0">
+                <columns>
+                    <TableColumn prefWidth="75.0" text="C1"/>
+                    <TableColumn prefWidth="75.0" text="C2"/>
+                </columns>
+                <columnResizePolicy>
+                    <TableView fx:constant="CONSTRAINED_RESIZE_POLICY"/>
+                </columnResizePolicy>
+            </TableView>
+            <BorderPane.margin>
+                <Insets right="10.0" top="27.0"/>
+            </BorderPane.margin>
+        </VBox>
+    </center>
+</BorderPane>

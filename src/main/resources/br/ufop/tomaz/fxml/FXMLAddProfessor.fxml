@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0"
+            prefWidth="600.0" stylesheets="@../styles/screensMainStyle.css" xmlns="http://javafx.com/javafx/8.0.171"
+            xmlns:fx="http://javafx.com/fxml/1" fx:controller="br.ufop.tomaz.controller.FXMLAddProfessorController">
+    <top>
+        <VBox prefHeight="100.0" prefWidth="800.0" BorderPane.alignment="CENTER">
+            <HBox alignment="TOP_RIGHT">
+                <MenuBar fx:id="menubar" maxWidth="1.7976931348623157E308" prefWidth="776.0" HBox.hgrow="ALWAYS">
+                    <Menu mnemonicParsing="false" text="File">
+                        <MenuItem mnemonicParsing="false" text="Close"/>
+                    </Menu>
+                    <Menu mnemonicParsing="false" text="Edit">
+                        <MenuItem mnemonicParsing="false" text="Delete"/>
+                    </Menu>
+                    <Menu mnemonicParsing="false" text="Help">
+                        <MenuItem mnemonicParsing="false" text="About"/>
+                    </Menu>
+                </MenuBar>
+                <Button fx:id="btnClose" alignment="CENTER_RIGHT" mnemonicParsing="false" onAction="#close"
+                        styleClass="closeButton" text="X"/>
+            </HBox>
+            <Label maxWidth="1.7976931348623157E308" styleClass="screen-label" text="PROFESSOR"/>
+        </VBox>
+    </top>
+    <bottom>
+        <ButtonBar prefHeight="40.0" prefWidth="200.0" styleClass="buttonBar" BorderPane.alignment="CENTER">
+            <buttons>
+                <Button fx:id="btnConfirm" mnemonicParsing="false" onAction="#addProfessorDb"
+                        styleClass="button-buttonBar" text="Add"/>
+                <Button fx:id="btnClear" mnemonicParsing="false" onAction="#clearFields" styleClass="button-buttonBar"
+                        text="Clear"/>
+                <Button fx:id="btnCancel" mnemonicParsing="false" onAction="#close" styleClass="button-buttonBar"
+                        text="Cancel"/>
+            </buttons>
+            <padding>
+                <Insets right="10.0"/>
+            </padding>
+        </ButtonBar>
+    </bottom>
+    <center>
+        <VBox prefHeight="200.0" prefWidth="100.0" BorderPane.alignment="CENTER">
+            <Label text="Name"/>
+            <TextField fx:id="edtName"/>
+            <GridPane>
+                <columnConstraints>
+                    <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0"/>
+                    <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0"/>
+                    <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0"/>
+                    <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0"/>
+                    <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0"/>
+                </columnConstraints>
+                <rowConstraints>
+                    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+                    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+                </rowConstraints>
+                <Label text="Workload"/>
+                <Label text="Min. Days Working" GridPane.columnIndex="1"/>
+                <Label text="Priority" GridPane.columnIndex="3"/>
+                <Label text="Tag" GridPane.columnIndex="4"/>
+                <Label text="Max. Days Working" GridPane.columnIndex="2"/>
+                <Spinner fx:id="spnWorkload" GridPane.rowIndex="1"/>
+                <Spinner fx:id="spnMinDaysWorking" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+                <Spinner fx:id="spnMaxDaysWorking" GridPane.columnIndex="2" GridPane.rowIndex="1"/>
+                <ComboBox fx:id="cmbPriority" prefWidth="150.0" GridPane.columnIndex="3" GridPane.rowIndex="1"/>
+                <TextField fx:id="edtTag" GridPane.columnIndex="4" GridPane.rowIndex="1"/>
+            </GridPane>
+            <TabPane fx:id="tabTimesPatterns" prefHeight="245.0" prefWidth="800.0" tabClosingPolicy="UNAVAILABLE">
+                <Tab fx:id="tabTimes" text="Times">
+                    <TableView fx:id="timesTableView" prefHeight="200.0" prefWidth="200.0"
+                               stylesheets="@../styles/tableTimesStyle.css">
+                        <columnResizePolicy>
+                            <TableView fx:constant="CONSTRAINED_RESIZE_POLICY"/>
+                        </columnResizePolicy>
+                    </TableView>
+                </Tab>
+                <Tab fx:id="tabPatterns" text="Undesired Patterns">
+                    <TableView fx:id="undPatternsTableView" prefHeight="200.0" prefWidth="200.0">
+                        <columnResizePolicy>
+                            <TableView fx:constant="CONSTRAINED_RESIZE_POLICY"/>
+                        </columnResizePolicy>
+                    </TableView>
+                </Tab>
+                <VBox.margin>
+                    <Insets top="20.0"/>
+                </VBox.margin>
+            </TabPane>
+            <BorderPane.margin>
+                <Insets left="10.0" right="10.0" top="10.0"/>
+            </BorderPane.margin>
+        </VBox>
+    </center>
+
+</BorderPane>

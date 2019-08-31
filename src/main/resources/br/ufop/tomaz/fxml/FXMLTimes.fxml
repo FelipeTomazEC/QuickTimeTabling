@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import java.net.URL?>
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="560.0" minWidth="800.0" prefHeight="560.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="br.ufop.tomaz.controller.FXMLTimesController">
+   <top>
+       <VBox prefHeight="101.0" prefWidth="800.0" BorderPane.alignment="CENTER">
+           <HBox alignment="TOP_RIGHT">
+               <MenuBar fx:id="menubar" maxWidth="1.7976931348623157E308" prefWidth="776.0" HBox.hgrow="ALWAYS">
+                   <Menu mnemonicParsing="false" text="File">
+                       <MenuItem mnemonicParsing="false" text="Close"/>
+                   </Menu>
+                   <Menu mnemonicParsing="false" text="Edit">
+                       <MenuItem mnemonicParsing="false" text="Delete"/>
+                   </Menu>
+                   <Menu mnemonicParsing="false" text="Help">
+                       <MenuItem mnemonicParsing="false" text="About"/>
+                   </Menu>
+               </MenuBar>
+               <Button fx:id="btnClose" alignment="CENTER_RIGHT" mnemonicParsing="false" styleClass="closeButton"
+                       text="X" onAction="#close"/>
+           </HBox>
+           <Label maxWidth="1.7976931348623157E308" prefHeight="71.0" prefWidth="745.0" styleClass="screen-label" text="TIMES" VBox.vgrow="ALWAYS" />
+       </VBox>
+   </top>
+   <center>
+       <GridPane hgap="20.0" prefHeight="348.0" prefWidth="760.0" BorderPane.alignment="CENTER">
+           <columnConstraints>
+               <ColumnConstraints hgrow="SOMETIMES" maxWidth="394.0" minWidth="10.0" prefWidth="192.0" />
+               <ColumnConstraints hgrow="SOMETIMES" maxWidth="619.0" minWidth="10.0" prefWidth="191.0" />
+               <ColumnConstraints hgrow="ALWAYS" maxWidth="619.0" minWidth="10.0" prefWidth="420.0" />
+           </columnConstraints>
+           <rowConstraints>
+               <RowConstraints maxHeight="146.0" minHeight="10.0" prefHeight="28.0" vgrow="NEVER" />
+               <RowConstraints maxHeight="146.0" minHeight="0.0" prefHeight="31.0" vgrow="NEVER" />
+               <RowConstraints maxHeight="338.0" minHeight="10.0" prefHeight="236.0" vgrow="ALWAYS" />
+               <RowConstraints maxHeight="334.0" minHeight="10.0" prefHeight="101.0" vgrow="ALWAYS" />
+           </rowConstraints>
+           <BorderPane.margin>
+               <Insets left="20.0" right="20.0" top="20.0" />
+           </BorderPane.margin>
+           <Label text="Days per week" />
+           <Label text="Times per day" GridPane.columnIndex="1" />
+           <ComboBox fx:id="cmbDaysPerWeek" prefHeight="25.0" prefWidth="189.0" GridPane.rowIndex="1" />
+           <ComboBox fx:id="cmbTimesPerDay" prefHeight="25.0" prefWidth="189.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+           <TabPane fx:id="tabPaneDaysAndTimes" prefHeight="111.0" prefWidth="341.0" tabClosingPolicy="UNAVAILABLE" GridPane.columnSpan="3" GridPane.rowIndex="2">
+               <GridPane.margin>
+                   <Insets top="20.0" />
+               </GridPane.margin>
+               <Tab text="Days">
+                   <GridPane fx:id="gridDays" hgap="80.0">
+                       <columnConstraints>
+                           <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                           <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                           <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                       </columnConstraints>
+                       <rowConstraints>
+                           <RowConstraints maxHeight="57.0" minHeight="10.0" prefHeight="44.0" vgrow="SOMETIMES" />
+                           <RowConstraints maxHeight="93.0" minHeight="10.0" prefHeight="62.0" vgrow="SOMETIMES" />
+                           <RowConstraints maxHeight="105.0" minHeight="10.0" prefHeight="48.0" vgrow="SOMETIMES" />
+                           <RowConstraints maxHeight="102.0" minHeight="10.0" prefHeight="68.0" vgrow="SOMETIMES" />
+                           <RowConstraints maxHeight="102.0" minHeight="10.0" prefHeight="42.0" vgrow="SOMETIMES" />
+                       </rowConstraints>
+                       <TextField />
+                       <TextField GridPane.rowIndex="1" />
+                       <TextField GridPane.rowIndex="2" />
+                       <TextField GridPane.rowIndex="3" />
+                       <TextField GridPane.rowIndex="4" />
+                       <TextField GridPane.columnIndex="1" />
+                       <TextField GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                       <TextField GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                       <TextField GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                       <TextField GridPane.columnIndex="1" GridPane.rowIndex="4" />
+                       <TextField GridPane.columnIndex="2" />
+                       <TextField GridPane.columnIndex="2" GridPane.rowIndex="1" />
+                       <TextField GridPane.columnIndex="2" GridPane.rowIndex="2" />
+                       <TextField GridPane.columnIndex="2" GridPane.rowIndex="3" />
+                       <TextField GridPane.columnIndex="2" GridPane.rowIndex="4" />
+                   </GridPane>
+               </Tab>
+               <Tab text="Times">
+                   <GridPane fx:id="gridTimes" hgap="80.0">
+                       <columnConstraints>
+                           <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                           <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                           <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                       </columnConstraints>
+                       <rowConstraints>
+                           <RowConstraints maxHeight="57.0" minHeight="10.0" prefHeight="44.0" vgrow="SOMETIMES" />
+                           <RowConstraints maxHeight="93.0" minHeight="10.0" prefHeight="62.0" vgrow="SOMETIMES" />
+                           <RowConstraints maxHeight="105.0" minHeight="10.0" prefHeight="48.0" vgrow="SOMETIMES" />
+                           <RowConstraints maxHeight="102.0" minHeight="10.0" prefHeight="68.0" vgrow="SOMETIMES" />
+                           <RowConstraints maxHeight="102.0" minHeight="10.0" prefHeight="42.0" vgrow="SOMETIMES" />
+                       </rowConstraints>
+                       <TextField />
+                       <TextField GridPane.rowIndex="1" />
+                       <TextField GridPane.rowIndex="2" />
+                       <TextField GridPane.rowIndex="3" />
+                       <TextField GridPane.rowIndex="4" />
+                       <TextField GridPane.columnIndex="1" />
+                       <TextField GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                       <TextField GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                       <TextField GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                       <TextField GridPane.columnIndex="1" GridPane.rowIndex="4" />
+                       <TextField GridPane.columnIndex="2" />
+                       <TextField GridPane.columnIndex="2" GridPane.rowIndex="1" />
+                       <TextField GridPane.columnIndex="2" GridPane.rowIndex="2" />
+                       <TextField GridPane.columnIndex="2" GridPane.rowIndex="3" />
+                       <TextField GridPane.columnIndex="2" GridPane.rowIndex="4" />
+                   </GridPane>
+               </Tab>
+           </TabPane>
+       </GridPane>
+   </center>
+   <bottom>
+      <ButtonBar prefHeight="50.0" prefWidth="800.0" BorderPane.alignment="CENTER" styleClass="buttonBar">
+        <buttons>
+          <Button fx:id="btnConfirm" mnemonicParsing="false" styleClass="button-buttonBar" text="Confirm" onAction="#confirm" />
+            <Button fx:id="btnClear" mnemonicParsing="false" styleClass="button-buttonBar" text="Clear"
+                    onAction="#clear"/>
+            <Button fx:id="btnCancel" mnemonicParsing="false" styleClass="button-buttonBar" text="Cancel"
+                    onAction="#cancel"/>
+        </buttons>
+      </ButtonBar>
+   </bottom>
+   <stylesheets>
+      <URL value="@../styles/screensMainStyle.css" />
+      <URL value="@../styles/timesStyle.css" />
+   </stylesheets>
+</BorderPane>
