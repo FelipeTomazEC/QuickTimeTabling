@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.control.cell.PropertyValueFactory?>
+<?import javafx.scene.layout.*?>
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0"
+            prefWidth="633.0" stylesheets="@../styles/screensMainStyle.css" xmlns="http://javafx.com/javafx/8.0.171"
+            xmlns:fx="http://javafx.com/fxml/1" fx:controller="br.ufop.tomaz.controller.FXMLManagerClassesController">
+   <top>
+       <VBox prefHeight="100.0" prefWidth="800.0" BorderPane.alignment="CENTER">
+           <HBox alignment="TOP_RIGHT">
+               <MenuBar fx:id="menubar" maxWidth="1.7976931348623157E308" prefWidth="776.0" HBox.hgrow="ALWAYS">
+                   <Menu mnemonicParsing="false" text="File">
+                       <MenuItem mnemonicParsing="false" text="Close"/>
+                   </Menu>
+                   <Menu mnemonicParsing="false" text="Edit">
+                       <MenuItem mnemonicParsing="false" text="Delete"/>
+                   </Menu>
+                   <Menu mnemonicParsing="false" text="Help">
+                       <MenuItem mnemonicParsing="false" text="About"/>
+                   </Menu>
+               </MenuBar>
+               <Button fx:id="btnClose" alignment="CENTER_RIGHT" mnemonicParsing="false" onAction="#close"
+                       styleClass="closeButton" text="X"/>
+           </HBox>
+           <Label maxWidth="1.7976931348623157E308" styleClass="screen-label" text="CLASSES" />
+       </VBox>
+   </top>
+   <bottom>
+      <ButtonBar prefHeight="40.0" prefWidth="200.0" styleClass="buttonBar" BorderPane.alignment="CENTER">
+        <buttons>
+            <Button fx:id="btnAdd" mnemonicParsing="false" onAction="#addClass" styleClass="button-buttonBar"
+                    text="Add"/>
+            <Button fx:id="btnEdit" mnemonicParsing="false" onAction="#editClass" styleClass="button-buttonBar"
+                    text="Edit"/>
+            <Button fx:id="btnDelete" mnemonicParsing="false" onAction="#deleteClass" styleClass="button-buttonBar"
+                    text="Delete"/>
+            <Button fx:id="btnImport" mnemonicParsing="false" onAction="#importClasses" styleClass="button-buttonBar"
+                    text="Import"/>
+        </buttons>
+         <padding>
+            <Insets right="10.0" />
+         </padding>
+      </ButtonBar>
+   </bottom>
+   <left>
+       <VBox spacing="10.0" BorderPane.alignment="CENTER">
+           <BorderPane.margin>
+               <Insets left="10.0" right="20.0" top="10.0"/>
+           </BorderPane.margin>
+           <TextField fx:id="edtSearch"/>
+           <ListView fx:id="classesListView" prefHeight="420.0" prefWidth="276.0" VBox.vgrow="ALWAYS"/>
+       </VBox>
+   </left>
+   <center>
+       <VBox prefHeight="200.0" prefWidth="100.0" BorderPane.alignment="CENTER">
+           <Label text="Class Details">
+              <VBox.margin>
+                  <Insets bottom="10.0" top="10.0" />
+              </VBox.margin>
+           </Label>
+           <Label text="Name" />
+           <TextField fx:id="edtClassName">
+              <VBox.margin>
+                  <Insets bottom="10.0" />
+              </VBox.margin>
+           </TextField>
+           <Label text="Related Events" />
+           <TableView fx:id="tabRelatedEvents" prefHeight="249.0" prefWidth="494.0">
+               <columns>
+                   <TableColumn maxWidth="1.7976931348623157E308" prefWidth="394.0" text="Subject">
+                       <cellValueFactory>
+                           <PropertyValueFactory property="subject"/>
+                       </cellValueFactory>
+                   </TableColumn>
+                   <TableColumn maxWidth="200.0" minWidth="90.0" prefWidth="90.0" resizable="false" text="Duration">
+                       <cellValueFactory>
+                           <PropertyValueFactory property="duration"/>
+                       </cellValueFactory>
+                   </TableColumn>
+               </columns>
+              <columnResizePolicy>
+                  <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+              </columnResizePolicy>
+              <VBox.margin>
+                  <Insets bottom="10.0" />
+              </VBox.margin>
+           </TableView>
+           <Label text="Constraints" />
+           <TableView fx:id="tabConstraints" prefHeight="200.0" prefWidth="200.0">
+               <columns>
+                   <TableColumn prefWidth="377.0" text="Type" />
+                   <TableColumn prefWidth="115.0" text="Priority" />
+               </columns>
+              <columnResizePolicy>
+                  <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+              </columnResizePolicy>
+           </TableView>
+           <BorderPane.margin>
+               <Insets right="10.0" />
+           </BorderPane.margin>
+       </VBox>
+   </center>
+</BorderPane>

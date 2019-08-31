@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<VBox xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.com/fxml"
+      prefHeight="100.0" prefWidth="800.0">
+    <HBox alignment="TOP_RIGHT">
+        <MenuBar fx:id="menubar" maxWidth="1.7976931348623157E308" prefWidth="776.0" HBox.hgrow="ALWAYS">
+            <Menu mnemonicParsing="false" text="File">
+                <MenuItem mnemonicParsing="false" text="Close"/>
+            </Menu>
+            <Menu mnemonicParsing="false" text="Edit">
+                <MenuItem mnemonicParsing="false" text="Delete"/>
+            </Menu>
+            <Menu mnemonicParsing="false" text="Help">
+                <MenuItem mnemonicParsing="false" text="About"/>
+            </Menu>
+        </MenuBar>
+        <Button fx:id="btnClose" alignment="CENTER_RIGHT" mnemonicParsing="false"
+                styleClass="closeButton" text="X"/>
+    </HBox>
+    <Label maxWidth="1.7976931348623157E308" styleClass="screen-label" text="TIMETABLING"/>
+</VBox>

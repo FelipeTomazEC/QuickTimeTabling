@@ -1,0 +1,42 @@
+.root{
+    -fx-pref-width: 800px;
+    -fx-pref-height: 560px;
+}
+.screen-label{
+    -fx-background-color: deepskyblue;
+    -fx-pref-height: 75px;
+    -fx-alignment: center;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-font-size: 25pt;
+}
+
+.button-buttonBar{
+    -fx-pref-width: 100px;
+    -fx-pref-height: 30px;
+}
+
+.buttonBar{
+    -fx-padding: 0 10 0 0;
+}
+
+.closeButton{
+    -fx-pref-height: 20;
+    -fx-pref-width: 30;
+    -fx-background-color: red;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-background-radius: 1.0;
+    -fx-border-radius: 1.0;
+    -fx-text-alignment: center;
+    -fx-alignment: center-right;
+    /*-fx-content-display: graphic-only;*/
+}
+
+.closeButton:hover {
+    -fx-background-color: #a10309;
+}
+
+.table-cell {
+    -fx-alignment: center;
+}

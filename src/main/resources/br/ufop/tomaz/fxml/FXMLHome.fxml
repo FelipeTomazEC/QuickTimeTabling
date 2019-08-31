@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="560.0" minWidth="800.0" prefHeight="560.0"
+            prefWidth="800.0" stylesheets="@../styles/mainStyle.css" xmlns="http://javafx.com/javafx/8.0.171"
+            xmlns:fx="http://javafx.com/fxml/1" fx:controller="br.ufop.tomaz.controller.FXMLMainController">
+    <top>
+        <MenuBar fx:id="menuBar" BorderPane.alignment="CENTER">
+            <Menu mnemonicParsing="false" text="File">
+                <MenuItem mnemonicParsing="false" text="Close"/>
+            </Menu>
+            <Menu mnemonicParsing="false" text="Edit">
+                <MenuItem mnemonicParsing="false" text="Delete"/>
+            </Menu>
+            <Menu mnemonicParsing="false" text="Help">
+                <MenuItem mnemonicParsing="false" text="About"/>
+            </Menu>
+        </MenuBar>
+    </top>
+    <center>
+        <GridPane BorderPane.alignment="CENTER">
+            <columnConstraints>
+                <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0"/>
+                <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0"/>
+                <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0"/>
+            </columnConstraints>
+            <rowConstraints>
+                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+            </rowConstraints>
+            <VBox alignment="CENTER">
+                <Button fx:id="btnTimes" mnemonicParsing="false" onAction="#openTimesScreen" prefHeight="176.0"
+                        prefWidth="166.0">
+                    <graphic>
+                        <ImageView fitHeight="115.0" fitWidth="115.0" pickOnBounds="true" preserveRatio="true">
+                            <Image url="@../icons/Times_Icon.png"/>
+                        </ImageView>
+                    </graphic>
+                </Button>
+                <Label text="Times"/>
+            </VBox>
+            <VBox alignment="CENTER" GridPane.columnIndex="1">
+                <Button fx:id="btnProfessors" contentDisplay="TOP" mnemonicParsing="false"
+                        onAction="#openManagerProfessorsScreen">
+                    <graphic>
+                        <ImageView fitHeight="115.0" fitWidth="115.0" pickOnBounds="true" preserveRatio="true">
+                            <Image url="@../icons/Professor_Icon.png"/>
+                        </ImageView>
+                    </graphic>
+                </Button>
+                <Label text="Professors"/>
+            </VBox>
+            <VBox alignment="CENTER" GridPane.columnIndex="2">
+                <Button fx:id="btnClasses" contentDisplay="TOP" mnemonicParsing="false"
+                        onAction="#openManagerClassesScreen">
+                    <graphic>
+                        <ImageView fitHeight="115.0" fitWidth="115.0" pickOnBounds="true" preserveRatio="true">
+                            <Image url="@../icons/Classroom_Icon.png"/>
+                        </ImageView>
+                    </graphic>
+                </Button>
+                <Label text="Classes"/>
+            </VBox>
+            <VBox alignment="CENTER" GridPane.rowIndex="1">
+                <Button fx:id="btnEvents" contentDisplay="TOP" mnemonicParsing="false"
+                        onAction="#openManagerEventsScreen">
+                    <graphic>
+                        <ImageView fitHeight="115.0" fitWidth="115.0" pickOnBounds="true" preserveRatio="true">
+                            <Image url="@../icons/Event_Icon.png"/>
+                        </ImageView>
+                    </graphic>
+                </Button>
+                <Label text="Events"/>
+            </VBox>
+            <VBox alignment="CENTER" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                <Button fx:id="btnConstraints" contentDisplay="TOP" mnemonicParsing="false"
+                        onAction="#openManagerConstraintsScreen">
+                    <graphic>
+                        <ImageView fitHeight="115.0" fitWidth="115.0" pickOnBounds="true" preserveRatio="true">
+                            <Image url="@../icons/Constraint_Icon.png"/>
+                        </ImageView>
+                    </graphic>
+                </Button>
+                <Label text="Constraints"/>
+            </VBox>
+            <VBox alignment="CENTER" GridPane.columnIndex="2" GridPane.rowIndex="1">
+                <Button fx:id="btnTimeTabling" contentDisplay="TOP" mnemonicParsing="false"
+                        onAction="#openTimetablingScreen">
+                    <graphic>
+                        <ImageView fitHeight="115.0" fitWidth="115.0" pickOnBounds="true" preserveRatio="true">
+                            <Image url="@../icons/Times_Tabling_Icon.png"/>
+                        </ImageView>
+                    </graphic>
+                </Button>
+                <Label text="TimeTabling"/>
+            </VBox>
+        </GridPane>
+    </center>
+</BorderPane>

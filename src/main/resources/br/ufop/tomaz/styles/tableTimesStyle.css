@@ -1,0 +1,20 @@
+.table-view:focused {
+    -fx-background-color: transparent;
+}
+
+.table-row-cell {
+    -fx-pref-height: 35px;
+}
+
+.table-row-cell:selected {
+    -fx-background-color: GREY;
+}
+
+.table-cell {
+    -fx-alignment: center;
+}
+
+.table-row-cell:empty {
+    -fx-max-height: 0px;
+}
+
