@@ -1,42 +1,69 @@
 package br.ufop.tomaz.util;
 
+import br.ufop.tomaz.model.Event;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.geometry.HPos;
+import javafx.scene.Node;
 import javafx.scene.control.Label;
-import javafx.scene.layout.ColumnConstraints;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.Priority;
-import javafx.scene.layout.RowConstraints;
+import javafx.scene.layout.*;
 import br.ufop.tomaz.model.EventAssignment;
 import br.ufop.tomaz.services.AppSettings;
+import javafx.scene.paint.Color;
+import javafx.scene.paint.Paint;
 
-import java.util.List;
+import java.util.*;
 
 public class TimeTablingGrid extends GridPane {
 
     private ObservableList<EventAssignment> items = FXCollections.observableArrayList();
+    private final List<String> availableColors = new ArrayList<>();
+    private final Map<Long, String> colorsMap = new HashMap<>();
 
     public TimeTablingGrid() {
         super();
-        setStyle("-fx-background-color: yellow");
         setVgap(5);
         setHgap(5);
         initRowsAndColumns();
-        initComponents();
+        initTimeTabling();
+        initColorsElements();
     }
 
-    private void initComponents() {
+    private void initTimeTabling() {
         items.addListener((ListChangeListener<EventAssignment>) c -> {
-            c.getList().forEach(ea -> {
-                int row = ea.getTime();
-                int column = ea.getDay();
-                GridItem gridItem = new GridItem(row, column, ea);
-                add(gridItem, column, row);
-            });
+            if(c.next()){
+                if(c.wasAdded()){
+                    c.getList().forEach(ea -> {
+                        Long eventId = ea.getEvent().getId();
+                        int row = ea.getTime();
+                        int column = ea.getDay();
+                        if(!colorsMap.containsKey(eventId)){
+                            colorsMap.put(eventId, availableColors.remove(0));
+                        }
+                        String color = colorsMap.get(eventId);
+                        GridItem gridItem = new GridItem(row, column, ea, color);
+                        add(gridItem, column, row);
+                    });
+                }
+
+                if(c.wasRemoved()){
+                    c.getRemoved().forEach(ea -> {
+                        Long eventId = ea.getEvent().getId();
+                        int row = ea.getTime();
+                        int column = ea.getDay();
+                        if(colorsMap.containsKey(eventId)){
+                            String color = colorsMap.remove(eventId);
+                            availableColors.add(color);
+                        }
+                        GridItem item = getItemFrom(row, column);
+                        getChildren().remove(item);
+                    });
+                }
+            }
+
         });
     }
 
@@ -78,6 +105,12 @@ public class TimeTablingGrid extends GridPane {
         });
     }
 
+    private void initColorsElements(){
+        List<String> colors = List.of("#ff5848", "#ffdc50", "#7bf3ff",
+                "#6e7dda", "#21dfb9", "#e3f57a", "#ed705a", "#f8a3e6");
+        this.availableColors.addAll(colors);
+    }
+
     public ObservableList<EventAssignment> getItems() {
         return items;
     }
@@ -86,38 +119,42 @@ public class TimeTablingGrid extends GridPane {
         this.items = items;
     }
 
+    public GridItem getItemFrom(int row, int column){
+        for(Node item : getChildren()) {
+            if (GridPane.getColumnIndex(item) == column && GridPane.getRowIndex(item) == row)
+                return (GridItem) item;
+        }
+        return null;
+    }
+
+
+
     private class GridItem extends Label {
 
+        private String color;
         private int rowIndex;
         private int columnIndex;
         private ObjectProperty<EventAssignment> eventAssigment = new SimpleObjectProperty<>(null);
 
-        public GridItem(int rowIndex, int columnIndex, EventAssignment eventAssignment) {
+        public GridItem(int rowIndex, int columnIndex, EventAssignment eventAssignment, String color) {
             super();
             this.rowIndex = rowIndex;
             this.columnIndex = columnIndex;
+            this.color = color;
             setEventAssigment(eventAssignment);
             this.textProperty().bind(this.eventAssigment.get().getEvent().subjectProperty());
             this.setMaxHeight(Double.MAX_VALUE);
             this.setMaxWidth(Double.MAX_VALUE);
             this.setWrapText(true);
-            setStyle("-fx-background-color: #67ff56");
+            setBackground(new Background(new BackgroundFill(Paint.valueOf(getColor()), null, null)));
         }
 
-        public int getRowIndex() {
-            return rowIndex;
+        public String getColor() {
+            return color;
         }
 
-        public void setRowIndex(int rowIndex) {
-            this.rowIndex = rowIndex;
-        }
-
-        public int getColumnIndex() {
-            return columnIndex;
-        }
-
-        public void setColumnIndex(int columnIndex) {
-            this.columnIndex = columnIndex;
+        public void setColor(String color) {
+            this.color = color;
         }
 
         public EventAssignment getEventAssigment() {
@@ -132,5 +169,20 @@ public class TimeTablingGrid extends GridPane {
             this.eventAssigment.set(eventAssigment);
         }
 
+        public int getRowIndex() {
+            return this.rowIndex;
+        }
+
+        public void setRowIndex(int rowIndex) {
+            this.rowIndex = rowIndex;
+        }
+
+        public int getColumnIndex() {
+            return this.columnIndex;
+        }
+
+        public void setColumnIndex(int columnIndex) {
+            this.columnIndex = columnIndex;
+        }
     }
 }

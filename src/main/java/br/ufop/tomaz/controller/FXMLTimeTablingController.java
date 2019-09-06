@@ -9,11 +9,9 @@ import br.ufop.tomaz.dao.ProfessorDAOImpl;
 import br.ufop.tomaz.model.ClassE;
 import br.ufop.tomaz.model.EventAssignment;
 import br.ufop.tomaz.model.Professor;
+import br.ufop.tomaz.model.Resource;
 import br.ufop.tomaz.services.AppSettings;
-import br.ufop.tomaz.util.DayAssignment;
-import br.ufop.tomaz.util.ReaderFilesUtils;
-import br.ufop.tomaz.util.Screen;
-import br.ufop.tomaz.util.TimeTablingTableView;
+import br.ufop.tomaz.util.*;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
@@ -21,6 +19,7 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
+import javafx.util.Callback;
 
 import java.io.File;
 import java.io.IOException;
@@ -46,16 +45,17 @@ public class FXMLTimeTablingController implements Initializable, AppScreen {
     @FXML
     private Button btnExport;
     @FXML
-    private ComboBox<?> cbmResource;
+    private ComboBox<String> cbmResource;
     @FXML
     private TextField edtSearch;
     @FXML
-    private ListView<ClassE> resourcesListView;
+    private ListView<Resource> resourcesListView;
     @FXML
     private TableView<?> violatedConstraintsTableView;
     @FXML
     private VBox rightContent;
-    private TimeTablingTableView tablingGrid;
+
+    private TimeTablingGrid tablingGrid;
     private List<EventAssignment> assignments;
 
     @Override
@@ -66,19 +66,51 @@ public class FXMLTimeTablingController implements Initializable, AppScreen {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         this.assignments = readAssignments();
-        this.loadClasses(assignments);
         this.configureResourceListView();
-        tablingGrid = new TimeTablingTableView();
+        this.initTimeTabling();
+        this.initResourceComboBox();
+        this.initSearchBar();
+    }
+
+    private void initResourceComboBox(){
+        this.cbmResource.getItems().addAll("Classes", "Professors");
+        this.cbmResource.getSelectionModel()
+                .selectedItemProperty()
+                .addListener(((ob, ov, nv) -> {
+                    List<Resource> resources = (nv.equals("Classes")) ?
+                            loadResources(ClassE.class) : loadResources(Professor.class);
+                    resourcesListView.getItems().setAll(resources);
+                    edtSearch.textProperty().setValue("");
+                }));
+        this.cbmResource.getSelectionModel().select(0);
+    }
+
+    private void initSearchBar(){
+        this.edtSearch.textProperty()
+                .addListener(((ob, ov, nv) -> {
+                    String resourceType = cbmResource.getSelectionModel().getSelectedItem();
+                    Class resourceClass = (resourceType.equals("Classes")) ? ClassE.class : Professor.class;
+                    List<Resource> filtered = loadResources(resourceClass).stream()
+                            .filter(res -> res.getName().toLowerCase().contains(nv.toLowerCase()))
+                            .collect(Collectors.toList());
+                    resourcesListView.getItems().setAll(filtered);
+                }));
+    }
+
+    private void initTimeTabling(){
+        this.tablingGrid = new TimeTablingGrid();
         VBox.setVgrow(tablingGrid, Priority.ALWAYS);
         rightContent.getChildren().add(0, tablingGrid);
     }
 
     private List<EventAssignment> readAssignments() {
         try {
-            FileChooser fileChooser = new FileChooser();
-            ExtensionFilter filter = new ExtensionFilter("Event Assignments File", "*.sol");
-            fileChooser.getExtensionFilters().add(filter);
-            File file = fileChooser.showOpenDialog(App.getWindow());
+//            FileChooser fileChooser = new FileChooser();
+//            ExtensionFilter filter = new ExtensionFilter("Event Assignments File", "*.sol");
+//            fileChooser.getExtensionFilters().add(filter);
+//            File file = fileChooser.showOpenDialog(App.getWindow());
+            File file = new File(System.getProperty("user.home").concat("/ET.sol"));
+            System.out.println(file.getAbsolutePath());
             return  new ReaderFilesUtils().importEventsAssignments(file);
         } catch (IOException e) {
             return new ArrayList<>();
@@ -97,43 +129,43 @@ public class FXMLTimeTablingController implements Initializable, AppScreen {
                 .collect(Collectors.toList());
     }
 
-    private void loadProfessors(List<EventAssignment> eventAssignments){
+    private List<Resource> loadProfessors(List<EventAssignment> eventAssignments){
         ProfessorDAO professorDAO = ProfessorDAOImpl.getInstance();
-        List<Professor> professors = eventAssignments.stream()
+
+        return eventAssignments.stream()
                 .map(eventAssignment -> eventAssignment.getProfessor())
                 .distinct()
                 .map(professor -> professorDAO.getProfessorByName(professor.getName()))
                 .collect(Collectors.toList());
-        //resourcesListView.getItems().setAll(professors);
     }
 
-    private void loadClasses(List<EventAssignment> eventAssignments){
+    private List<Resource> loadClasses(List<EventAssignment> eventAssignments){
         ClassDAO classDAO = ClassDAOImpl.getInstance();
-        List<ClassE> classes = eventAssignments.stream()
+
+        return eventAssignments.stream()
                 .map(eventAssignment -> eventAssignment.getClassE())
                 .distinct()
                 .map(classE -> classDAO.getClassByName(classE.getName()))
                 .collect(Collectors.toList());
-        resourcesListView.getItems().setAll(classes);
     }
 
-    private void loadAssignmentsOf(ClassE c){
-        tablingGrid.getItems().clear();
-        List<EventAssignment> assignments = getAssignmentsOf(c);
-        Map<Integer, List<EventAssignment>> mapAssignments = assignments.stream()
-                .collect(Collectors.groupingBy(EventAssignment::getDay));
-        mapAssignments.forEach((k, v) ->{
-           String dayName =  AppSettings.getInstance().getDaysList().get(k - 1);
-           tablingGrid.getItems().add(new DayAssignment(dayName, v));
-        });
+    private List<Resource> loadResources(Class resourceClass){
+        return (resourceClass == ClassE.class) ? loadClasses(assignments) : loadProfessors(assignments);
+    }
 
+    private void loadAssignmentsOf(Resource resource){
+        List<EventAssignment> assignments = (resource.getClass() == ClassE.class) ?
+                getAssignmentsOf((ClassE) resource) : getAssignmentsOf((Professor) resource);
+        tablingGrid.getItems().addAll(assignments);
     }
 
     private void configureResourceListView(){
         resourcesListView.getSelectionModel()
                 .selectedItemProperty()
                 .addListener((ob, ov, nv) ->{
-                    loadAssignmentsOf(nv);
+                    tablingGrid.getItems().clear();
+                    if(nv != null)
+                        loadAssignmentsOf(nv);
                 });
     }
 

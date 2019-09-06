@@ -13,7 +13,7 @@ import java.util.List;
 @Entity
 @Access(AccessType.PROPERTY)
 @NamedQuery(name = "ClassE.findAll", query = "SELECT c FROM ClassE c")
-public class ClassE implements Serializable, Editable {
+public class ClassE implements Serializable, Editable, Resource {
 
     private LongProperty id;
     private StringProperty name;

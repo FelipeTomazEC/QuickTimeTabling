@@ -11,7 +11,7 @@ import java.util.List;
 @Access(AccessType.PROPERTY)
 @NamedQuery(name = "Professor.findAll", query = "SELECT p FROM Professor p")
 
-public class Professor implements Serializable, Editable {
+public class Professor implements Serializable, Editable, Resource{
 
 
     private LongProperty id;
