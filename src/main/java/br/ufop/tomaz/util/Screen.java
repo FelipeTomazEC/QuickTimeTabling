@@ -3,7 +3,7 @@ package br.ufop.tomaz.util;
 public enum Screen {
 
     HOME("FXMLHome.fxml"), ADD_EVENT("FXMLAddEvent.fxml"),
-    MANAGER_PROFESSORS("FXMLManagerProfessors.fxml"), ADD_CLASS("FXMLAddClassE.fxml"),
+    MANAGER_PROFESSORS("FXMLManagerProfessors.fxml"), ADD_CLASSE("FXMLAddClassE.fxml"),
     TIMES("FXMLTimes.fxml"), MANAGER_CLASSES("FXMLManagerClasses.fxml"),
     MANAGER_CONSTRAINTS("FXMLManagerConstraints.fxml"), MANAGER_EVENTS("FXMLManagerEvents.fxml"),
     TIME_TABLING("FXMLTimeTabling.fxml"), ADD_PROFESSOR("FXMLAddProfessor.fxml");

@@ -8,12 +8,10 @@ import org.jdom2.output.Format;
 import org.jdom2.output.XMLOutputter;
 import br.ufop.tomaz.util.Day;
 
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
+import java.io.*;
 import java.net.URL;
 import java.net.URLDecoder;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -47,7 +45,6 @@ public class AppSettings {
     }
 
     public void saveSettings() {
-
         Element settingsXML = new Element("settings");
         Document documentXML = new Document(settingsXML);
         settingsXML.addContent(getDaysXML());
@@ -55,7 +52,11 @@ public class AppSettings {
         XMLOutputter xmlOutputter = new XMLOutputter();
         xmlOutputter.setFormat(Format.getPrettyFormat());
         try {
-            xmlOutputter.output(documentXML, new FileWriter(settingsFile));
+            //TODO - Verify why the file is not saving changes!
+            OutputStream out = new FileOutputStream(settingsFile);
+            xmlOutputter.output(documentXML, out);
+            out.close();
+            System.out.println("Saving ...");
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -108,12 +109,10 @@ public class AppSettings {
 
     private List<String> getTimesListFromXML() {
         SAXBuilder builder = new SAXBuilder();
-
         try {
             Document document = builder.build(settingsFile);
             Element settings = document.getRootElement();
             Element times = settings.getChild("times");
-
             return times.getChildren()
                     .stream()
                     .map(Element::getText)

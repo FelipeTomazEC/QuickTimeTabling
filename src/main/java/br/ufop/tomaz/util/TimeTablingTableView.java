@@ -19,11 +19,12 @@ import br.ufop.tomaz.model.EventAssignment;
 import br.ufop.tomaz.services.AppSettings;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class TimeTablingTableView extends TableView<DayAssignment> {
 
     private List<String> availableColors;
-    private Map<Event, String> assignmentColorMap;
+    private Map<Long, String> assignmentColorMap;
     private Map<Long, EventAssignment> eventAssignmentMap;
     private static DataFormat dataFormat = new DataFormat("eventAssignment");
 
@@ -34,7 +35,7 @@ public class TimeTablingTableView extends TableView<DayAssignment> {
         colorItemsCellsConfig();
         this.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
         this.getStyleClass().add("time-tabling");
-        this.getStylesheets().add(getClass().getResource("/styles/timeTablingStyle.css").toString());
+        this.getStylesheets().add(getClass().getResource("/br/ufop/tomaz/styles/timeTablingStyle.css").toString());
         this.setSelectionModel(null);
         initColumns();
     }
@@ -50,9 +51,19 @@ public class TimeTablingTableView extends TableView<DayAssignment> {
             TableColumn<DayAssignment, EventAssignment> col = new TableColumn<>(times.get(i));
             int finalI = i;
             col.setCellValueFactory(param -> {
-                EventAssignment ea = param.getValue().getAssignments().get(finalI);
-                eventAssignmentMap.put(ea.getId(), ea);
-                return new SimpleObjectProperty<>(ea);
+                List<EventAssignment> assignmentsList = param.getValue()
+                        .getAssignments()
+                        .stream()
+                        .filter(a -> a.getTime() == finalI - 1)
+                        .collect(Collectors.toList());
+
+                if(assignmentsList.isEmpty()){
+                   return null;
+                } else{
+                    EventAssignment assignment = assignmentsList.get(0);
+                    eventAssignmentMap.put(assignment.getId(), assignment);
+                    return new SimpleObjectProperty<>(assignment);
+                }
             });
             col.setCellFactory(param -> new TimeTablingCell());
             getColumns().add(col);
@@ -72,18 +83,25 @@ public class TimeTablingTableView extends TableView<DayAssignment> {
                 if (c.wasRemoved()) {
                     c.getRemoved().forEach(
                             assignment -> assignment.getAssignments().forEach(ea -> {
-                                String color = assignmentColorMap.remove(ea.getEvent());
+                                String color = assignmentColorMap.remove(ea.getEvent().getId());
                                 availableColors.add(color);
+
+                                System.out.println("assignment color size: " + assignmentColorMap.size());
+                                System.out.println("available colors size: " + availableColors.size());
                             })
                     );
                 }
                 if (c.wasAdded()) {
                     c.getAddedSubList().forEach(
                             assignment -> assignment.getAssignments().forEach(ea -> {
-                                String color = availableColors.remove(0);
-                                assignmentColorMap.put(ea.getEvent(), color);
+                                Event event = ea.getEvent();
+                                if(!assignmentColorMap.containsKey(event.getId())){
+                                    assignmentColorMap.put(event.getId(), availableColors.remove(0));
+                                }
                             })
                     );
+                    System.out.println("assignment color size: " + assignmentColorMap.size());
+                    System.out.println("available colors size: " + availableColors.size());
                 }
             }
         });
@@ -108,7 +126,7 @@ public class TimeTablingTableView extends TableView<DayAssignment> {
                 label.setText(item.getEvent().getSubject());
                 label.setWrapText(true);
                 setGraphic(label);
-                String color = assignmentColorMap.get(item.getEvent());
+                String color = assignmentColorMap.get(item.getEvent().getId());
                 setBackground(new Background(new BackgroundFill(Paint.valueOf(color), CornerRadii.EMPTY, Insets.EMPTY)));
             }
         }

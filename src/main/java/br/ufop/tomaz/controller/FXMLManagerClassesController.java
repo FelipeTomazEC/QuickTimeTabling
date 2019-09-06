@@ -69,7 +69,7 @@ public class FXMLManagerClassesController implements Initializable, AppScreen {
 
     @FXML
     private void addClass() throws IOException {
-        App.setScreen(Screen.ADD_CLASS);
+        App.setScreen(Screen.ADD_CLASSE);
     }
 
     private void initComponents() {
