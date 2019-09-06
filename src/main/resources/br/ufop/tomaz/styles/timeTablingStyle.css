@@ -1,7 +1,21 @@
 
-.table-cell {
-    -fx-alignment: center;
-    -fx-pref-height: 50px;
-    -fx-font-size: 8pt;
-    -fx-wrap-text: true;
+.time-tabling {
+    -fx-content-display: none;
+    -fx-font-size: 11pt;
+    -fx-border-color: deepskyblue;
+    -fx-border-width: 2px;
+    -fx-padding: 5px;
+    -fx-vgap: 5px;
+    -fx-hgap: 5px;
+}
+.label{
+    -fx-font-weight: bold;
+}
+
+.grid-item {
+    -fx-font-weight: 500;
+    -fx-text-fill: black;
+    -fx-padding: 5px;
+    -fx-max-width: infinity;
+    -fx-max-height: infinity;
 }

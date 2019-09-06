@@ -25,8 +25,8 @@ public class TimeTablingGrid extends GridPane {
 
     public TimeTablingGrid() {
         super();
-        setVgap(5);
-        setHgap(5);
+        this.getStyleClass().add("time-tabling");
+        this.getStylesheets().add("/br/ufop/tomaz/styles/timeTablingStyle.css");
         initRowsAndColumns();
         initTimeTabling();
         initColorsElements();
@@ -138,13 +138,12 @@ public class TimeTablingGrid extends GridPane {
 
         public GridItem(int rowIndex, int columnIndex, EventAssignment eventAssignment, String color) {
             super();
+            this.getStyleClass().add("grid-item");
             this.rowIndex = rowIndex;
             this.columnIndex = columnIndex;
             this.color = color;
             setEventAssigment(eventAssignment);
             this.textProperty().bind(this.eventAssigment.get().getEvent().subjectProperty());
-            this.setMaxHeight(Double.MAX_VALUE);
-            this.setMaxWidth(Double.MAX_VALUE);
             this.setWrapText(true);
             setBackground(new Background(new BackgroundFill(Paint.valueOf(getColor()), null, null)));
         }
