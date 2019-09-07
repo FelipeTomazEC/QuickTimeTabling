@@ -1,5 +1,6 @@
 package br.ufop.tomaz.services;
 
+import br.ufop.tomaz.App;
 import org.jdom2.Document;
 import org.jdom2.Element;
 import org.jdom2.JDOMException;
@@ -12,6 +13,7 @@ import java.io.*;
 import java.net.URL;
 import java.net.URLDecoder;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -22,20 +24,15 @@ public class AppSettings {
     private static AppSettings appSettings = null;
     private List<String> daysList;
     private List<String> timesList;
-    private File settingsFile;
 
     private AppSettings() {
-        ClassLoader loader = getClass().getClassLoader();
-        URL resource = loader.getResource("META-INF/settings.xml");
         try {
-            String path = URLDecoder.decode(resource.getFile(), "UTF-8");
-            this.settingsFile = new File(path);
-            this.daysList = getDaysListFromXML();
-            this.timesList = getTimesListFromXML();
-        } catch (UnsupportedEncodingException | NullPointerException e) {
+            File settingsFiles = getSettingsFile();
+            this.daysList = getDaysListFromXML(settingsFiles);
+            this.timesList = getTimesListFromXML(settingsFiles);
+        } catch (NullPointerException e) {
             e.printStackTrace();
         }
-
     }
 
     public static AppSettings getInstance() {
@@ -52,8 +49,8 @@ public class AppSettings {
         XMLOutputter xmlOutputter = new XMLOutputter();
         xmlOutputter.setFormat(Format.getPrettyFormat());
         try {
-            //TODO - Verify why the file is not saving changes!
-            OutputStream out = new FileOutputStream(settingsFile);
+            String filepath = App.APP_DIRECTORY.concat("/settings.xml");
+            OutputStream out = new FileOutputStream(new File(filepath));
             xmlOutputter.output(documentXML, out);
             out.close();
             System.out.println("Saving ...");
@@ -87,7 +84,7 @@ public class AppSettings {
         return times;
     }
 
-    private List<String> getDaysListFromXML() {
+    private List<String> getDaysListFromXML(File settingsFile) {
 
         SAXBuilder builder = new SAXBuilder();
 
@@ -107,7 +104,7 @@ public class AppSettings {
         }
     }
 
-    private List<String> getTimesListFromXML() {
+    private List<String> getTimesListFromXML(File settingsFile) {
         SAXBuilder builder = new SAXBuilder();
         try {
             Document document = builder.build(settingsFile);
@@ -142,6 +139,12 @@ public class AppSettings {
 
     public List<Day> defaultDays() {
         return daysList.stream().map(d -> new Day(d, timesList)).collect(Collectors.toList());
+    }
+
+    private File getSettingsFile(){
+        String filepath = App.APP_DIRECTORY.concat("/settings.xml");
+        return (Files.exists(Path.of(filepath))) ?
+                new File(filepath) : new File(getClass().getResource("/META-INF/settings.xml").getPath());
     }
 
 }

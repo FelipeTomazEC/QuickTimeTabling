@@ -11,13 +11,22 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 import javafx.stage.Window;
 
+import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 
 public class App extends Application {
 
     private static Stage stage;
+    public static final String APP_DIRECTORY = System.getProperty("user.home")
+            .concat(File.separator)
+            .concat("Quick Time Tabling");
 
     public static void main(String[] args) {
+        if(!Files.exists(Path.of(APP_DIRECTORY))){
+            createUserDirectories();
+        }
         launch(args);
     }
 
@@ -54,5 +63,15 @@ public class App extends Application {
 
     public static Window getWindow(){
         return stage.getOwner();
+    }
+
+    private static void createUserDirectories(){
+        File dir = new File(APP_DIRECTORY);
+        if (dir.mkdirs()) {
+            System.out.println("Directories created successfully!");
+        } else {
+            System.out.println("There was an error creating directories...");
+            System.out.println("Please try again!");
+        }
     }
 }
