@@ -8,28 +8,33 @@ import br.ufop.tomaz.dao.ProfessorDAOImpl;
 import br.ufop.tomaz.model.Editable;
 import br.ufop.tomaz.model.Professor;
 import br.ufop.tomaz.model.Unavailability;
+import br.ufop.tomaz.model.UndesiredPattern;
 import br.ufop.tomaz.services.AppSettings;
 import br.ufop.tomaz.util.Day;
 import br.ufop.tomaz.util.Screen;
 import br.ufop.tomaz.util.TableTimesUtils;
+import javafx.beans.binding.BooleanBinding;
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
-
+import javafx.scene.control.cell.CheckBoxTableCell;
 
 import java.io.IOException;
 import java.net.URL;
 import java.util.Arrays;
 import java.util.List;
 import java.util.ResourceBundle;
+import java.util.stream.Collectors;
 
 public class FXMLAddProfessorController implements Initializable, AppScreen, EditScreen {
 
     @FXML
     private TableView<Day> timesTableView;
     @FXML
-    private TableView<Day> undPatternsTableView;
+    private TableView<Pattern> undPatternsTableView;
     @FXML
     private MenuBar menubar;
     @FXML
@@ -40,6 +45,8 @@ public class FXMLAddProfessorController implements Initializable, AppScreen, Edi
     private Button btnClear;
     @FXML
     private Button btnCancel;
+    @FXML
+    private Button btnRemoveUndesiredPattern;
     @FXML
     private TextField edtName;
     @FXML
@@ -62,6 +69,7 @@ public class FXMLAddProfessorController implements Initializable, AppScreen, Edi
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         initComponents();
+        initPatternsTable(undPatternsTableView);
     }
 
     private void initComponents() {
@@ -94,6 +102,8 @@ public class FXMLAddProfessorController implements Initializable, AppScreen, Edi
         spnMinDaysWorking.getValueFactory().setValue(0);
         cmbPriority.getSelectionModel().clearSelection();
         timesTableView.setItems(FXCollections.observableList(AppSettings.getInstance().defaultDays()));
+        undPatternsTableView.getItems().clear();
+        btnRemoveUndesiredPattern.disableProperty().bind(getPatternsRemoveBinding());
     }
 
     @FXML
@@ -106,6 +116,13 @@ public class FXMLAddProfessorController implements Initializable, AppScreen, Edi
         professor.setPreferredMinNumberOfWorkingDays(spnMinDaysWorking.getValue());
         professor.setPreferredMaxNumberOfWorkingDays(spnMaxDaysWorking.getValue());
         professor.setUnavailabilities(TableTimesUtils.getUnavailabilities(timesTableView));
+
+        List<UndesiredPattern> undesiredPatternList = undPatternsTableView.getItems()
+                .stream()
+                .map(pattern -> pattern.getUndesiredPattern())
+                .collect(Collectors.toList());
+        professor.setUndesiredPatterns(undesiredPatternList);
+
         new Thread(() -> ProfessorDAOImpl.getInstance().persistProfessor(professor)).start();
         clearFields();
     }
@@ -126,6 +143,12 @@ public class FXMLAddProfessorController implements Initializable, AppScreen, Edi
                 .bindBidirectional(editProfessor.workloadProperty().asObject());
         cmbPriority.getSelectionModel().select(editProfessor.getPriority());
         TableTimesUtils.loadUnavailabilities(timesTableView, editProfessor.getUnavailabilities());
+        List<Pattern> undesiredPatternList = editProfessor.getUndesiredPatterns()
+                .stream()
+                .map(undesiredPattern -> getPatternFromUndesiredPattern(undesiredPattern))
+                .collect(Collectors.toList());
+        undPatternsTableView.getItems().setAll(undesiredPatternList);
+        btnRemoveUndesiredPattern.disableProperty().bind(getPatternsRemoveBinding());
         configureConfirmEditionButton();
     }
 
@@ -136,6 +159,11 @@ public class FXMLAddProfessorController implements Initializable, AppScreen, Edi
             editProfessor.setPriority(cmbPriority.getSelectionModel().getSelectedItem());
             List<Unavailability> unavailabilities = TableTimesUtils.getUnavailabilities(timesTableView);
             editProfessor.setUnavailabilities(unavailabilities);
+            List<UndesiredPattern> undesiredPatternList = undPatternsTableView.getItems()
+                    .stream()
+                    .map(pattern -> pattern.getUndesiredPattern())
+                    .collect(Collectors.toList());
+            editProfessor.setUndesiredPatterns(undesiredPatternList);
             ProfessorDAOImpl.getInstance().updateProfessor(editProfessor);
             try {
                 close();
@@ -143,5 +171,135 @@ public class FXMLAddProfessorController implements Initializable, AppScreen, Edi
                 e.printStackTrace();
             }
         });
+    }
+
+    private void initPatternsTable(TableView<Pattern> undesiredPatternTableView){
+
+        List<String> days = AppSettings.getInstance().getDaysList();
+
+        List<TableColumn<Pattern, Boolean>> tableColumnList = days.stream()
+                .map((day) -> new TableColumn<Pattern, Boolean>(day))
+                .collect(Collectors.toList());
+
+        tableColumnList.forEach(column -> {
+            column.setCellValueFactory(cellData -> {
+                int index = cellData.getTableView().getColumns().indexOf(cellData.getTableColumn());
+                return cellData.getValue().days.get(index);
+            });
+
+            column.setSortable(false);
+
+            column.setCellFactory(param -> new UndesiredPatternTableCell());
+
+        });
+
+        undesiredPatternTableView.getColumns().addAll(tableColumnList);
+
+        TableColumn<Pattern, Boolean> removeColumn = new TableColumn<>("Remove");
+        removeColumn.setId("header-remove");
+        removeColumn.setSortable(false);
+        removeColumn.setCellValueFactory(param -> param.getValue().remove);
+        removeColumn.setCellFactory(param -> new CheckBoxTableCell<>());
+        undesiredPatternTableView.setEditable(true);
+        undesiredPatternTableView.getColumns().add(removeColumn);
+    }
+
+    @FXML
+    private void addNewUndesiredPattern(){
+        Pattern pattern = new Pattern();
+        undPatternsTableView.getItems().add(pattern);
+        btnRemoveUndesiredPattern.disableProperty().bind(getPatternsRemoveBinding());
+    }
+
+    private BooleanBinding getPatternsRemoveBinding (){
+        BooleanBinding binding = new SimpleBooleanProperty(false)
+                .or(new SimpleBooleanProperty(false));
+        for (Pattern p : undPatternsTableView.getItems()){
+            binding = binding.or(p.remove);
+        }
+        return binding.not();
+    }
+
+    private Pattern getPatternFromUndesiredPattern(UndesiredPattern undesiredPattern){
+        Pattern pattern = new Pattern();
+        char [] undesired = undesiredPattern.getPattern();
+        for(int i = 0; i < undesired.length; i++){
+            if(undesired[i] == '0')
+                pattern.setDayAvailability(i, false);
+        }
+        return pattern;
+    }
+
+    @FXML
+    private void removeSelectedPatterns(){
+        List<Pattern> patternToRemoveList = this.undPatternsTableView
+                .getItems()
+                .filtered(pattern -> pattern.remove.get());
+        undPatternsTableView.getItems().removeAll(patternToRemoveList);
+        btnRemoveUndesiredPattern.disableProperty().bind(getPatternsRemoveBinding());
+    }
+
+    private class UndesiredPatternTableCell extends TableCell<Pattern, Boolean>{
+
+        public UndesiredPatternTableCell(){
+            this.setOnMouseClicked((event)-> onClickAction());
+        }
+
+        @Override
+        protected void updateItem(Boolean item, boolean empty) {
+            super.updateItem(item, empty);
+            if (empty || item == null) {
+                setStyle("-fx-border-color: transparent; -fx-background-color: white;" );
+                setOnMouseClicked(null);
+            } else {
+                setOnMouseClicked(event -> this.onClickAction());
+                String color = (item) ? "#008000" : "#FF0000";
+                setStyle("-fx-border-color: #cacaca; -fx-background-color:"+ color + ';' );
+            }
+        }
+
+        private void onClickAction(){
+            int dayIndex = getTableView().getColumns().indexOf(getTableColumn());
+            getTableRow().getItem().setDayAvailability(dayIndex, !getItem());
+        }
+    }
+
+    private class Pattern {
+
+        private List<BooleanProperty> days;
+        private BooleanProperty remove = new SimpleBooleanProperty(false);
+
+        public Pattern() {
+            this.days = AppSettings.getInstance()
+                    .getDaysList()
+                    .stream()
+                    .map(day -> new SimpleBooleanProperty(true))
+                    .collect(Collectors.toList());
+        }
+
+        public boolean isRemove() {
+            return remove.get();
+        }
+
+        public BooleanProperty removeProperty() {
+            return remove;
+        }
+
+        public void setRemove(boolean remove) {
+            this.remove.set(remove);
+        }
+
+        public void setDayAvailability(int dayIndex, boolean value){
+            this.days.get(dayIndex).setValue(value);
+        }
+
+        public UndesiredPattern getUndesiredPattern(){
+            char [] pattern = this.days.stream()
+                    .map(day -> (day.get()) ? "1" : "0")
+                    .reduce((accumulator, ch) -> accumulator.concat(ch))
+                    .orElse("")
+                    .toCharArray();
+            return new UndesiredPattern(pattern);
+        }
     }
 }

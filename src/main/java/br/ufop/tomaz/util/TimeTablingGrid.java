@@ -1,6 +1,5 @@
 package br.ufop.tomaz.util;
 
-import br.ufop.tomaz.model.Event;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
@@ -12,7 +11,6 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.*;
 import br.ufop.tomaz.model.EventAssignment;
 import br.ufop.tomaz.services.AppSettings;
-import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 
 import java.util.*;
@@ -26,7 +24,7 @@ public class TimeTablingGrid extends GridPane {
     public TimeTablingGrid() {
         super();
         this.getStyleClass().add("time-tabling");
-        this.getStylesheets().add("/br/ufop/tomaz/styles/timeTablingStyle.css");
+        this.getStylesheets().add("/br/ufop/tomaz/styles/timeTabling.css");
         initRowsAndColumns();
         initTimeTabling();
         initColorsElements();

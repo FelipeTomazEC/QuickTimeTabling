@@ -130,11 +130,11 @@ public class TableTimesUtils {
                 setGraphic(null);
                 disableProperty().setValue(true);
             } else if (item == Time.AVAILABLE)
-                this.setStyle("-fx-background-color: green; -fx-border-color: rgba(0,0,0,0.84)");
+                this.setStyle("-fx-background-color: #16c117; -fx-border-color: #cacaca");
             else if (item == Time.UNAVAILABLE)
-                this.setStyle("-fx-background-color: red; -fx-border-color: rgba(0,0,0,0.84)");
+                this.setStyle("-fx-background-color: red; -fx-border-color: #cacaca");
             else if (item == Time.UNDESIRED)
-                this.setStyle("-fx-background-color: yellow; -fx-border-color: rgba(0,0,0,0.84)");
+                this.setStyle("-fx-background-color: yellow; -fx-border-color: #cacaca");
         }
 
         //Sets the time availability in each cell when clicking
@@ -174,7 +174,7 @@ public class TableTimesUtils {
             int time = unavailability.getTime() - 1;
             int type = unavailability.getType();
             Day d = days.get(day);
-            type = type == Unavailability.HARD_UNAVAILABILITY ? Time.UNAVAILABLE : Time.UNDESIRED;
+            type = (type == Unavailability.HARD_UNAVAILABILITY) ? Time.UNAVAILABLE : Time.UNDESIRED;
             d.getTimes().get(time).setAvailability(type);
         });
     }

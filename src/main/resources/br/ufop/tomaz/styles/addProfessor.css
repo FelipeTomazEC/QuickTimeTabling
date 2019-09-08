@@ -1,0 +1,37 @@
+.pattern-button {
+    -fx-pref-width: 130px;
+    -fx-pref-height: 35px;
+}
+
+.button-patterns-container{
+    -fx-spacing: 15px;
+    -fx-alignment: center;
+}
+
+.pattern-table > .table-column > .table-cell{
+    -fx-border-color: #cacaca;
+}
+
+#header-remove{
+    -fx-background-color: #cacaca;
+}
+
+.check-box .box {
+
+    -fx-background-color: white;
+    -fx-border-color:grey;
+    -fx-border-radius:3px;
+
+}
+
+.check-box:selected .mark {
+    -fx-background-color: black;
+}
+
+.check-box:selected .box {
+    -fx-background-color: transparent;
+}
+
+.tab-pane{
+    -fx-max-height: infinity;
+}

@@ -127,6 +127,6 @@
    </bottom>
    <stylesheets>
       <URL value="@../styles/screensMainStyle.css" />
-      <URL value="@../styles/timesStyle.css" />
+      <URL value="@../styles/times.css" />
    </stylesheets>
 </BorderPane>

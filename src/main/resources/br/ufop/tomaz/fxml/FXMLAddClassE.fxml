@@ -54,7 +54,7 @@
             </TextField>
             <Label text="Times" />
             <TableView fx:id="timesTableView" prefHeight="259.0" prefWidth="780.0"
-                       stylesheets="@../styles/tableTimesStyle.css">
+                       stylesheets="@../styles/tableTimes.css">
                 <columnResizePolicy>
                     <TableView fx:constant="CONSTRAINED_RESIZE_POLICY"/>
                 </columnResizePolicy>

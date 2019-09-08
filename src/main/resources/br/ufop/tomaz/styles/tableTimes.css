@@ -15,6 +15,7 @@
 }
 
 .table-row-cell:empty {
+    -fx-background-color: transparent;
     -fx-max-height: 0px;
 }
 
