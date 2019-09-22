@@ -15,6 +15,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.stage.FileChooser;
+import javafx.stage.FileChooser.ExtensionFilter;
 
 
 import java.io.File;
@@ -39,6 +40,8 @@ public class FXMLManagerProfessorsController implements Initializable, AppScreen
     private Button btnDelete;
     @FXML
     private Button btnImport;
+    @FXML
+    private Button btnExport;
     @FXML
     private ListView<Professor> professorsListView;
     @FXML
@@ -118,7 +121,7 @@ public class FXMLManagerProfessorsController implements Initializable, AppScreen
     private void importProfessors() {
         FileChooser fileChooser = new FileChooser();
         fileChooser.getExtensionFilters()
-                .add(new FileChooser.ExtensionFilter("Professors_file.csv", "*.csv"));
+                .add(new FileChooser.ExtensionFilter("Professors File", "*.csv"));
         File file = fileChooser.showOpenDialog(null);
         if (file != null) {
             try {
@@ -130,6 +133,25 @@ public class FXMLManagerProfessorsController implements Initializable, AppScreen
             }
         } else {
             System.out.println("Occurred a problem when tried to open the file. Please try again.");
+        }
+    }
+
+    @FXML
+    private void exportProfessors() throws IOException {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Export Professors");
+        ExtensionFilter filter = new ExtensionFilter("Professors File","*.csv");
+        fileChooser.getExtensionFilters().add(filter);
+        fileChooser.setInitialFileName("professors.csv");
+
+        File exportFile = fileChooser.showSaveDialog(App.getWindow());
+        if(exportFile != null){
+            String filename = (exportFile.getName().endsWith(".csv")) ?
+                    exportFile.getName() : exportFile.getName().concat(".csv");
+            String separator = System.getProperty("file.separator");
+            String filepath = exportFile.getParent().concat(separator).concat(filename);
+
+            new FileUtils().exportProfessors(professorsList, new File(filepath));
         }
     }
 

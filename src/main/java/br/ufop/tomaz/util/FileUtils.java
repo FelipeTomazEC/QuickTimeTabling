@@ -41,10 +41,8 @@ public class FileUtils {
 
         classList.forEach(classE -> {
             String name = classE.getName();
-            String unavailableTimes = classE.getUnavailabilities().stream()
-                    .map((unavailability -> unavailability.toString()))
-                    .reduce((u1, u2) -> u1.concat("+").concat(u2))
-                    .orElse("");
+            String unavailableTimes = unavailabilityToString(classE.getUnavailabilities());
+
             try {
                 System.out.println(unavailableTimes);
                 printer.printRecord(name, unavailableTimes);
@@ -61,7 +59,7 @@ public class FileUtils {
     public List<Professor> importProfessors(File file) throws IOException {
         List<Professor> professorList = new ArrayList<>();
         Reader in = new FileReader(file);
-        Iterable<CSVRecord> records = CSVFormat.EXCEL
+        Iterable<CSVRecord> records = CSVFormat.DEFAULT
                 .withHeader("Professor",
                         "Workload",
                         "Min. Days",
@@ -72,7 +70,6 @@ public class FileUtils {
                         "Priority",
                         "Tag"
                 ).withFirstRecordAsHeader()
-                .withDelimiter(';')
                 .parse(in);
 
         records.forEach(line -> {
@@ -91,6 +88,70 @@ public class FileUtils {
             );
         });
         return professorList;
+    }
+
+    public void exportProfessors(List<Professor> professorList, File file) throws IOException {
+        BufferedWriter writer = new BufferedWriter(new FileWriter(file));
+        String [] header = {"Professor",
+                "Workload",
+                "Min. Days",
+                "Max. Days",
+                "Unavailable Times",
+                "Undesired Times",
+                "Undesired Patterns",
+                "Priority",
+                "Tag"
+        };
+        CSVPrinter printer = new CSVPrinter(writer, CSVFormat.DEFAULT.withHeader(header));
+
+        professorList.forEach(professor -> {
+            String name = professor.getName();
+            int workload = professor.getWorkload();
+            int minDays = professor.getPreferredMinNumberOfWorkingDays();
+            int maxDays = professor.getPreferredMaxNumberOfWorkingDays();
+            double priority = professor.getPriority();
+            String tag = professor.getTag();
+
+            List<Unavailability> unavailableList = professor.getUnavailabilities()
+                    .stream()
+                    .filter(u -> u.getType() == Unavailability.HARD_UNAVAILABILITY)
+                    .collect(Collectors.toList());
+
+            List<Unavailability> undesiredList = professor.getUnavailabilities()
+                    .stream()
+                    .filter(u -> u.getType() == Unavailability.SOFT_UNAVAILABILITY)
+                    .collect(Collectors.toList());
+
+            String unavailableTimes = unavailabilityToString(unavailableList);
+            String undesiredTimes = unavailabilityToString(undesiredList);
+            String undesiredPatterns = professor.getUndesiredPatterns()
+                    .stream()
+                    .map(undesiredPattern -> undesiredPattern.getPattern())
+                    .map(pattern -> String.copyValueOf(pattern))
+                    .reduce((p1, p2) -> p1.concat("+").concat(p2))
+                    .orElse("");
+
+            try {
+                printer.printRecord(name,
+                        workload,
+                        minDays,
+                        maxDays,
+                        unavailableTimes,
+                        undesiredTimes,
+                        undesiredPatterns,
+                        priority,
+                        tag
+                );
+            } catch (IOException e) {
+                System.out.println("Occurred some error when exporting professors.");
+                e.printStackTrace();
+            }
+        });
+
+        writer.flush();
+        printer.flush();
+        printer.close();
+        writer.close();
     }
 
     public List<Event> importEvents(File file) throws IOException {
@@ -203,7 +264,6 @@ public class FileUtils {
         }
     }
 
-
     //TODO -- Include Preassigned Events
     private Event getEvent(String className,
                            String subject,
@@ -292,5 +352,12 @@ public class FileUtils {
             ProfessorDAOImpl.getInstance().persistProfessor(professor);
             return professor;
         }
+    }
+
+    private String unavailabilityToString(List<Unavailability> unavailabilityList){
+        return unavailabilityList.stream()
+                .map(unavailability -> unavailability.toString())
+                .reduce((u1, u2) -> u1.concat("+").concat(u2))
+                .orElse("");
     }
 }
