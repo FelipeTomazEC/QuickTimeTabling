@@ -15,6 +15,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.stage.FileChooser;
+import javafx.stage.FileChooser.ExtensionFilter;
 
 import java.io.File;
 import java.io.IOException;
@@ -38,6 +39,8 @@ public class FXMLManagerEventsController implements Initializable, AppScreen {
     private Button btnImport;
     @FXML
     private Button btnNoFilters;
+    @FXML
+    private Button btnExport;
     @FXML
     private ComboBox<String> cmbTag;
     @FXML
@@ -217,6 +220,25 @@ public class FXMLManagerEventsController implements Initializable, AppScreen {
             }
         } else {
             System.out.println("Occurred a problem when tried to open the file. Please try again.");
+        }
+    }
+
+    @FXML
+    private void exportEvents() throws IOException {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Export Events");
+        ExtensionFilter filter = new ExtensionFilter("Events", "*.csv");
+        fileChooser.setInitialFileName("events.csv");
+        fileChooser.setSelectedExtensionFilter(filter);
+
+        File exportFile = fileChooser.showSaveDialog(App.getWindow());
+        if(exportFile != null){
+            String filename = (exportFile.getName().endsWith(".csv")) ?
+                    exportFile.getName() : exportFile.getName().concat(".csv");
+            String separator = System.getProperty("file.separator");
+            String filepath = exportFile.getParent().concat(separator).concat(filename);
+
+            new FileUtils().exportEvents(events, new File(filepath));
         }
     }
 

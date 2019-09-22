@@ -125,8 +125,6 @@ public class TimeTablingGrid extends GridPane {
         return null;
     }
 
-
-
     private class GridItem extends Label {
 
         private String color;

@@ -155,7 +155,6 @@ public class FileUtils {
     }
 
     public List<Event> importEvents(File file) throws IOException {
-
         List<Event> eventList = new ArrayList<>();
         Reader in = new FileReader(file);
         Iterable<CSVRecord> records = CSVFormat.DEFAULT
@@ -168,7 +167,6 @@ public class FileUtils {
                         "Min Days Gap",
                         "Max Days Gap"
                 )
-                .withDelimiter(';')
                 .withFirstRecordAsHeader()
                 .parse(in);
 
@@ -184,6 +182,47 @@ public class FileUtils {
             eventList.add(getEvent(className, subject, tag, duration, professor, preassigned, minDaysGap, maxDaysGap));
         });
         return eventList;
+    }
+
+    public void exportEvents(List<Event> eventList, File file) throws IOException {
+        BufferedWriter writer = new BufferedWriter(new FileWriter(file));
+        String [] header = {"Class",
+                "Subject",
+                "Tag",
+                "Duration",
+                "Professor",
+                "Preassigned Times",
+                "Min Days Gap",
+                "Max Days Gap"
+        };
+        CSVPrinter printer = new CSVPrinter(writer, CSVFormat.DEFAULT.withHeader(header));
+
+        eventList.forEach(event -> {
+            String classE = event.getClassE().getName();
+            String subject = event.getSubject();
+            String tag = event.getTag();
+            int duration = event.getDuration();
+            String professors = event.getProfessorWeights()
+                    .stream()
+                    .map(pw -> pw.getProfessor().getName())
+                    .reduce((name, acc) -> name.concat("+").concat(acc))
+                    .orElse("");
+            String preassignedTimes = ""; //Todo - Implement preassigned events
+            int minGap = event.getMinGapBetweenMeetings();
+            int maxGap = event.getMaxGapBetweenMeetings();
+
+            try {
+                printer.printRecord(classE, subject, tag, duration, professors, preassignedTimes, minGap, maxGap);
+            } catch (IOException e) {
+                System.out.println("Occurred some error when exporting events.");
+                e.printStackTrace();
+            }
+        });
+
+        printer.flush();
+        writer.flush();
+        printer.close();
+        writer.close();
     }
 
     public List<EventAssignment> importEventsAssignments(File solutionFile) throws IOException {
