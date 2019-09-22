@@ -10,23 +10,18 @@ import br.ufop.tomaz.model.ClassE;
 import br.ufop.tomaz.model.EventAssignment;
 import br.ufop.tomaz.model.Professor;
 import br.ufop.tomaz.model.Resource;
-import br.ufop.tomaz.services.AppSettings;
 import br.ufop.tomaz.util.*;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
-import javafx.stage.FileChooser;
-import javafx.stage.FileChooser.ExtensionFilter;
-import javafx.util.Callback;
 
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.stream.Collectors;
 
@@ -111,7 +106,7 @@ public class FXMLTimeTablingController implements Initializable, AppScreen {
 //            File file = fileChooser.showOpenDialog(App.getWindow());
             File file = new File(System.getProperty("user.home").concat("/ET.sol"));
             System.out.println(file.getAbsolutePath());
-            return  new ReaderFilesUtils().importEventsAssignments(file);
+            return  new FileUtils().importEventsAssignments(file);
         } catch (IOException e) {
             return new ArrayList<>();
         }

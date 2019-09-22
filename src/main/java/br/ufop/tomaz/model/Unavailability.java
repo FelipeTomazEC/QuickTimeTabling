@@ -46,4 +46,9 @@ public class Unavailability implements Serializable {
     public void setType(int type) {
         this.type = type;
     }
+
+    @Override
+    public String toString() {
+        return day + "," + time;
+    }
 }

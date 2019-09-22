@@ -7,7 +7,7 @@ import br.ufop.tomaz.dao.EventDAOImpl;
 import br.ufop.tomaz.dao.ProfessorDAOImpl;
 import br.ufop.tomaz.model.Event;
 import br.ufop.tomaz.model.Professor;
-import br.ufop.tomaz.util.ReaderFilesUtils;
+import br.ufop.tomaz.util.FileUtils;
 import br.ufop.tomaz.util.Screen;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -122,7 +122,7 @@ public class FXMLManagerProfessorsController implements Initializable, AppScreen
         File file = fileChooser.showOpenDialog(null);
         if (file != null) {
             try {
-                List<Professor> professors = new ReaderFilesUtils().importProfessors(file);
+                List<Professor> professors = new FileUtils().importProfessors(file);
                 professorsList.setAll(ProfessorDAOImpl.getInstance().getProfessors());
                 professorsList.sort(Comparator.comparing(Professor::getName));
             } catch (IOException e) {

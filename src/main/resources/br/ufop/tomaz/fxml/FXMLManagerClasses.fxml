@@ -38,6 +38,8 @@
                     text="Delete"/>
             <Button fx:id="btnImport" mnemonicParsing="false" onAction="#importClasses" styleClass="button-buttonBar"
                     text="Import"/>
+            <Button fx:id="btnExport" mnemonicParsing="false" onAction="#exportClasses" styleClass="button-buttonBar"
+                    text="Export"/>
         </buttons>
          <padding>
             <Insets right="10.0" />

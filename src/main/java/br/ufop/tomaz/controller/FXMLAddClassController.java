@@ -60,7 +60,7 @@ public class FXMLAddClassController implements Initializable, AppScreen, EditScr
 
     @Override
     public void close() throws IOException {
-        App.setScreen(Screen.HOME);
+        App.setScreen(Screen.MANAGER_CLASSES);
     }
 
     @FXML

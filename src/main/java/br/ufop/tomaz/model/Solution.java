@@ -1,7 +1,7 @@
 package br.ufop.tomaz.model;
 
 
-import br.ufop.tomaz.util.ReaderFilesUtils;
+import br.ufop.tomaz.util.FileUtils;
 
 import java.io.File;
 import java.io.IOException;
@@ -22,7 +22,7 @@ public class Solution {
 
     private void initAssignments() {
         try {
-            this.eventAssignments = new ReaderFilesUtils().importEventsAssignments(solutionFile);
+            this.eventAssignments = new FileUtils().importEventsAssignments(solutionFile);
         } catch (IOException e) {
             this.eventAssignments = new ArrayList<>();
             e.printStackTrace();
@@ -31,7 +31,7 @@ public class Solution {
 
     private void initViolations() {
         try {
-            this.violations = new ReaderFilesUtils().importSolutionViolations(solutionFile);
+            this.violations = new FileUtils().importSolutionViolations(solutionFile);
         } catch (IOException e) {
             this.violations = new ArrayList<>();
             e.printStackTrace();

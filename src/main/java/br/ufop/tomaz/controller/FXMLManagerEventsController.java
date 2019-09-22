@@ -6,7 +6,7 @@ import br.ufop.tomaz.controller.interfaces.AppScreen;
 import br.ufop.tomaz.dao.EventDAOImpl;
 import br.ufop.tomaz.model.Event;
 import br.ufop.tomaz.model.ProfessorWeight;
-import br.ufop.tomaz.util.ReaderFilesUtils;
+import br.ufop.tomaz.util.FileUtils;
 import br.ufop.tomaz.util.Screen;
 import javafx.beans.value.ChangeListener;
 import javafx.collections.FXCollections;
@@ -207,7 +207,7 @@ public class FXMLManagerEventsController implements Initializable, AppScreen {
                 .add(new FileChooser.ExtensionFilter("Events_File.csv", "*.csv"));
         File eventsFile = fileChooser.showOpenDialog(null);
         if (eventsFile != null) {
-            ReaderFilesUtils reader = new ReaderFilesUtils();
+            FileUtils reader = new FileUtils();
             try {
                 List<Event> events = reader.importEvents(eventsFile);
                 this.events.addAll(events);

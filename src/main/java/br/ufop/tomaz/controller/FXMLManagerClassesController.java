@@ -7,7 +7,7 @@ import br.ufop.tomaz.dao.ClassDAOImpl;
 import br.ufop.tomaz.dao.EventDAOImpl;
 import br.ufop.tomaz.model.ClassE;
 import br.ufop.tomaz.model.Event;
-import br.ufop.tomaz.util.ReaderFilesUtils;
+import br.ufop.tomaz.util.FileUtils;
 import br.ufop.tomaz.util.Screen;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -28,28 +28,17 @@ import java.util.stream.Collectors;
 
 public class FXMLManagerClassesController implements Initializable, AppScreen {
 
-    @FXML
-    private MenuBar menubar;
-    @FXML
-    private Button btnClose;
-    @FXML
-    private Button btnAdd;
-    @FXML
-    private Button btnEdit;
-    @FXML
-    private Button btnDelete;
-    @FXML
-    private Button btnImport;
-    @FXML
-    private ListView<ClassE> classesListView;
-    @FXML
-    private TextField edtClassName;
-    @FXML
-    private TextField edtSearch;
-    @FXML
-    private TableView<Event> tabRelatedEvents;
-    @FXML
-    private TableView<?> tabConstraints;
+    @FXML private MenuBar menubar;
+    @FXML private Button btnClose;
+    @FXML private Button btnAdd;
+    @FXML private Button btnEdit;
+    @FXML private Button btnDelete;
+    @FXML private Button btnImport;
+    @FXML private ListView<ClassE> classesListView;
+    @FXML private TextField edtClassName;
+    @FXML private TextField edtSearch;
+    @FXML private TableView<Event> tabRelatedEvents;
+    @FXML private TableView<?> tabConstraints;
     private ObservableList<ClassE> classesList;
 
 
@@ -73,7 +62,7 @@ public class FXMLManagerClassesController implements Initializable, AppScreen {
     }
 
     private void initComponents() {
-        classesListView.setCellFactory(new Callback<ListView<ClassE>, ListCell<ClassE>>() {
+        classesListView.setCellFactory(new Callback<>() {
             @Override
             public ListCell<ClassE> call(ListView<ClassE> param) {
                 return new ListCell<ClassE>() {
@@ -127,7 +116,7 @@ public class FXMLManagerClassesController implements Initializable, AppScreen {
                 .add(new FileChooser.ExtensionFilter("Classes_File.csv", "*.csv"));
         File classesFile = fileChooser.showOpenDialog(null);
         if (classesFile != null) {
-            ReaderFilesUtils reader = new ReaderFilesUtils();
+            FileUtils reader = new FileUtils();
             try {
                 List<ClassE> classes = reader.importClasses(classesFile);
                 classesList.addAll(classes);
@@ -138,6 +127,26 @@ public class FXMLManagerClassesController implements Initializable, AppScreen {
         } else {
             System.out.println("Occurred a problem when tried to open the file. Please try again.");
         }
+    }
+
+    @FXML
+    private void exportClasses() throws IOException {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Export classes");
+        FileChooser.ExtensionFilter filter = new FileChooser.ExtensionFilter("Classes", "*.csv");
+        fileChooser.setInitialFileName("classes.csv");
+        fileChooser.setSelectedExtensionFilter(filter);
+
+        File exportFile = fileChooser.showSaveDialog(App.getWindow());
+        if(exportFile != null){
+            String filename = (exportFile.getName().endsWith(".csv")) ?
+                    exportFile.getName() : exportFile.getName().concat(".csv");
+            String separator = System.getProperty("file.separator");
+            String filepath = exportFile.getParent().concat(separator).concat(filename);
+
+            new FileUtils().exportsClasses(classesList, new File(filepath));
+        }
+
     }
 
     @FXML

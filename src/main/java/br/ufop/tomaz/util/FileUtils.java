@@ -3,28 +3,25 @@ package br.ufop.tomaz.util;
 import br.ufop.tomaz.dao.*;
 import br.ufop.tomaz.model.*;
 import org.apache.commons.csv.CSVFormat;
+import org.apache.commons.csv.CSVPrinter;
 import org.apache.commons.csv.CSVRecord;
 
 import javax.persistence.NoResultException;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.Reader;
+import java.io.*;
 import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class ReaderFilesUtils {
+public class FileUtils {
 
     public List<ClassE> importClasses(File file) throws IOException {
         List<ClassE> classList = new ArrayList<>();
         Reader in = new FileReader(file);
         Iterable<CSVRecord> records = CSVFormat
-                .EXCEL
+                .DEFAULT
                 .withHeader("Class", "Unavailable Times")
-                .withDelimiter(';')
                 .withFirstRecordAsHeader()
                 .parse(in);
 
@@ -35,6 +32,30 @@ public class ReaderFilesUtils {
             classList.add(getClassE(className, unavailability));
         });
         return classList;
+    }
+
+    public void exportsClasses(List<ClassE> classList, File file) throws IOException {
+        BufferedWriter writer = new BufferedWriter(new FileWriter(file));
+        String [] header = {"Class", "Unavailable Times"};
+        CSVPrinter printer = new CSVPrinter(writer, CSVFormat.DEFAULT.withHeader(header));
+
+        classList.forEach(classE -> {
+            String name = classE.getName();
+            String unavailableTimes = classE.getUnavailabilities().stream()
+                    .map((unavailability -> unavailability.toString()))
+                    .reduce((u1, u2) -> u1.concat("+").concat(u2))
+                    .orElse("");
+            try {
+                System.out.println(unavailableTimes);
+                printer.printRecord(name, unavailableTimes);
+            } catch (IOException e) {
+                System.out.println("Occurred some error when exporting classes.");
+                e.printStackTrace();
+            }
+        });
+
+        printer.flush();
+        writer.close();
     }
 
     public List<Professor> importProfessors(File file) throws IOException {
