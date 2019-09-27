@@ -22,6 +22,7 @@ public class FileUtils {
         Iterable<CSVRecord> records = CSVFormat
                 .DEFAULT
                 .withHeader("Class", "Unavailable Times")
+                .withDelimiter(';')
                 .withFirstRecordAsHeader()
                 .parse(in);
 
@@ -37,7 +38,9 @@ public class FileUtils {
     public void exportsClasses(List<ClassE> classList, File file) throws IOException {
         BufferedWriter writer = new BufferedWriter(new FileWriter(file));
         String [] header = {"Class", "Unavailable Times"};
-        CSVPrinter printer = new CSVPrinter(writer, CSVFormat.DEFAULT.withHeader(header));
+        CSVPrinter printer = new CSVPrinter(writer,
+                CSVFormat.DEFAULT.withHeader(header).withDelimiter(';')
+        );
 
         classList.forEach(classE -> {
             String name = classE.getName();
@@ -58,18 +61,21 @@ public class FileUtils {
 
     public List<Professor> importProfessors(File file) throws IOException {
         List<Professor> professorList = new ArrayList<>();
+        String [] header = {"Professor",
+                "Workload",
+                "Min. Days",
+                "Max. Days",
+                "Unavailable Times",
+                "Undesired Times",
+                "Undesired Patterns",
+                "Priority",
+                "Tag"
+        };
         Reader in = new FileReader(file);
         Iterable<CSVRecord> records = CSVFormat.DEFAULT
-                .withHeader("Professor",
-                        "Workload",
-                        "Min. Days",
-                        "Max. Days",
-                        "Unavailable Times",
-                        "Undesired Times",
-                        "Undesired Patterns",
-                        "Priority",
-                        "Tag"
-                ).withFirstRecordAsHeader()
+                .withHeader(header)
+                .withDelimiter(';')
+                .withFirstRecordAsHeader()
                 .parse(in);
 
         records.forEach(line -> {
@@ -84,7 +90,16 @@ public class FileUtils {
             String tag = line.get("Tag");
 
             professorList.add(
-                    getProfessor(name, workload, minDays, maxDays, unavailableTimes, undesiredTimes, undesiredPatterns, priority, tag)
+                    getProfessor(name,
+                            workload,
+                            minDays,
+                            maxDays,
+                            unavailableTimes,
+                            undesiredTimes,
+                            undesiredPatterns,
+                            priority,
+                            tag
+                    )
             );
         });
         return professorList;
@@ -102,7 +117,9 @@ public class FileUtils {
                 "Priority",
                 "Tag"
         };
-        CSVPrinter printer = new CSVPrinter(writer, CSVFormat.DEFAULT.withHeader(header));
+        CSVPrinter printer = new CSVPrinter(writer,
+                CSVFormat.DEFAULT.withHeader(header).withDelimiter(';')
+        );
 
         professorList.forEach(professor -> {
             String name = professor.getName();
@@ -156,17 +173,20 @@ public class FileUtils {
 
     public List<Event> importEvents(File file) throws IOException {
         List<Event> eventList = new ArrayList<>();
+        String [] header = {"Class",
+                "Subject",
+                "Tag",
+                "Duration",
+                "Compatible Professors",
+                "Preassigned Times",
+                "Min Days Gap",
+                "Max Days Gap",
+                "Split"
+        };
         Reader in = new FileReader(file);
         Iterable<CSVRecord> records = CSVFormat.DEFAULT
-                .withHeader("Class",
-                        "Subject",
-                        "Tag",
-                        "Duration",
-                        "Professor",
-                        "Preassigned Times",
-                        "Min Days Gap",
-                        "Max Days Gap"
-                )
+                .withHeader(header)
+                .withDelimiter(';')
                 .withFirstRecordAsHeader()
                 .parse(in);
 
@@ -175,11 +195,22 @@ public class FileUtils {
             String subject = line.get("Subject");
             String tag = line.get("Tag");
             String duration = line.get("Duration");
-            String professor = line.get("Professor");
+            String compatibleProfessors = line.get("Compatible Professors");
             String preassigned = line.get("Preassigned Times");
             String minDaysGap = line.get("Min Days Gap");
             String maxDaysGap = line.get("Max Days Gap");
-            eventList.add(getEvent(className, subject, tag, duration, professor, preassigned, minDaysGap, maxDaysGap));
+            String split = line.get("Split");
+
+            eventList.add(getEvent(className,
+                    subject,
+                    tag,
+                    duration,
+                    compatibleProfessors,
+                    preassigned,
+                    minDaysGap,
+                    maxDaysGap,
+                    split)
+            );
         });
         return eventList;
     }
@@ -190,29 +221,46 @@ public class FileUtils {
                 "Subject",
                 "Tag",
                 "Duration",
-                "Professor",
+                "Compatible Professors",
                 "Preassigned Times",
                 "Min Days Gap",
-                "Max Days Gap"
+                "Max Days Gap",
+                "Split"
         };
-        CSVPrinter printer = new CSVPrinter(writer, CSVFormat.DEFAULT.withHeader(header));
+        CSVPrinter printer = new CSVPrinter(writer,
+                CSVFormat.DEFAULT.withHeader(header).withDelimiter(';')
+        );
 
         eventList.forEach(event -> {
             String classE = event.getClassE().getName();
             String subject = event.getSubject();
             String tag = event.getTag();
             int duration = event.getDuration();
-            String professors = event.getProfessorWeights()
+            String compatibleProfessors = event.getProfessorWeights()
                     .stream()
-                    .map(pw -> pw.getProfessor().getName())
+                    .map(pw -> pw.getProfessor()
+                            .getName()
+                            .concat(",")
+                            .concat(String.valueOf(pw.getWeight()))
+                    )
                     .reduce((name, acc) -> name.concat("+").concat(acc))
                     .orElse("");
             String preassignedTimes = ""; //Todo - Implement preassigned events
             int minGap = event.getMinGapBetweenMeetings();
             int maxGap = event.getMaxGapBetweenMeetings();
+            String split = event.getSplit();
 
             try {
-                printer.printRecord(classE, subject, tag, duration, professors, preassignedTimes, minGap, maxGap);
+                printer.printRecord(classE,
+                        subject,
+                        tag,
+                        duration,
+                        compatibleProfessors,
+                        preassignedTimes,
+                        minGap,
+                        maxGap,
+                        split
+                );
             } catch (IOException e) {
                 System.out.println("Occurred some error when exporting events.");
                 e.printStackTrace();
@@ -308,20 +356,21 @@ public class FileUtils {
                            String subject,
                            String tag,
                            String duration,
-                           String professor,
+                           String compatibleProfessors,
                            String preassigned,
                            String minDaysGap,
-                           String maxDaysGap
+                           String maxDaysGap,
+                           String split
     ) {
         Event event = new Event();
         event.setSubject(subject);
         event.setTag(tag);
         event.setDuration(Integer.parseInt(duration));
-        event.setSplit(duration);
+        event.setSplit(split);
         event.setMinGapBetweenMeetings(Integer.parseInt(minDaysGap));
         event.setMaxGapBetweenMeetings(Integer.parseInt(maxDaysGap));
         event.setClassE(getClassFromDb(className));
-        event.setProfessorWeights(getProfessorWeights(professor.split("\\+")));
+        event.setProfessorWeights(getProfessorWeights(compatibleProfessors.split("\\+")));
         EventDAOImpl.getInstance().persistEvent(event);
         return event;
     }
@@ -367,7 +416,13 @@ public class FileUtils {
 
     private List<ProfessorWeight> getProfessorWeights(String[] professors) {
         return Arrays.stream(professors)
-                .map(p -> new ProfessorWeight(getProfessorFromDb(p), 0))
+                .map(professorName->{
+                    int weight = (professorName.split(",").length > 1)
+                            ? Integer.parseInt(professorName.split(",")[1]) : 0;
+                    professorName = professorName.split(",")[0];
+                    Professor professor = getProfessorFromDb(professorName);
+                    return new ProfessorWeight(professor, weight);
+                })
                 .collect(Collectors.toList());
     }
 
