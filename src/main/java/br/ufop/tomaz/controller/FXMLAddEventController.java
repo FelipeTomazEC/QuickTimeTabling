@@ -267,6 +267,11 @@ public class FXMLAddEventController implements Initializable, AppScreen, EditScr
         event.setDuration(spnDuration.getValue());
         event.setClassE(cmbClass.getSelectionModel().getSelectedItem());
         event.setProfessorWeights(new ArrayList<>(compatibleProfessors));
+
+        if(cmbLinkedEvent.getSelectionModel().getSelectedIndex() != 0){
+            event.setLinkedEvent(cmbLinkedEvent.getValue());
+        }
+
         EventDAOImpl.getInstance().persistEvent(event);
         clearFields();
     }
@@ -281,12 +286,17 @@ public class FXMLAddEventController implements Initializable, AppScreen, EditScr
         cmbClass.getSelectionModel().select(-1);
         compatibleProfessors.forEach((p) -> availableProfessors.add(p.getProfessor()));
         compatibleProfessors.clear();
+        cmbLinkedEvent.getSelectionModel().selectFirst();
     }
 
     @FXML
     private void initCmbLinkedEvent(){
         EventDAO eventDAO = EventDAOImpl.getInstance();
         List<Event> eventList = eventDAO.getAllEvents();
+        Event none = new Event();
+        none.setSubject("None");
+        cmbLinkedEvent.getItems().add(none);
+        cmbLinkedEvent.getSelectionModel().select(none);
         this.cmbLinkedEvent.getItems().addAll(eventList);
     }
 

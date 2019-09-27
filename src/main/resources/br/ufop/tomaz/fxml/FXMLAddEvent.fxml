@@ -89,7 +89,7 @@
                 <Label text="Class" GridPane.columnIndex="2" />
                 <ComboBox fx:id="cmbClass" maxWidth="1.7976931348623157E308" prefHeight="25.0" prefWidth="160.0" GridPane.columnIndex="2" GridPane.hgrow="ALWAYS" GridPane.rowIndex="1" />
             <Label text="Linked Event" GridPane.columnIndex="2" GridPane.rowIndex="2" />
-            <ComboBox fx:id="cmbLinkedEvent" maxWidth="1.7976931348623157E308" prefHeight="28.0" prefWidth="273.0" GridPane.columnIndex="2" GridPane.columnSpan="2" GridPane.hgrow="ALWAYS" GridPane.rowIndex="3" />
+            <ComboBox fx:id="cmbLinkedEvent" maxWidth="1.7976931348623157E308" prefHeight="28.0" prefWidth="273.0" promptText="None" GridPane.columnIndex="2" GridPane.columnSpan="2" GridPane.hgrow="ALWAYS" GridPane.rowIndex="3" />
             </GridPane>
             <GridPane layoutX="290.0" layoutY="187.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="120.0">
                 <columnConstraints>

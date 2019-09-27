@@ -33,6 +33,18 @@ public class Event implements Serializable, Editable {
     @Access(AccessType.FIELD)
     private List<ProfessorWeight> professorWeights;
 
+    @OneToOne(fetch = FetchType.EAGER)
+    @Access(AccessType.FIELD)
+    private Event linkedEvent;
+
+    public Event getLinkedEvent() {
+        return linkedEvent;
+    }
+
+    public void setLinkedEvent(Event linkedEvent) {
+        this.linkedEvent = linkedEvent;
+    }
+
     public Event() {
         this.id = new SimpleLongProperty();
         this.subject = new SimpleStringProperty("");
