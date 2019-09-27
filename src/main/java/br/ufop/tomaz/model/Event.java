@@ -27,6 +27,7 @@ public class Event implements Serializable, Editable {
     @JoinColumn(name = "class_id")
     private ClassE classE;
 
+
     @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "compatible_professors", joinColumns = @JoinColumn(name = "event_id"))
     @Access(AccessType.FIELD)

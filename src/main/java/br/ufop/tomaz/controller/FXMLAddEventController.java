@@ -5,6 +5,7 @@ import br.ufop.tomaz.App;
 import br.ufop.tomaz.controller.interfaces.AppScreen;
 import br.ufop.tomaz.controller.interfaces.EditScreen;
 import br.ufop.tomaz.dao.ClassDAOImpl;
+import br.ufop.tomaz.dao.EventDAO;
 import br.ufop.tomaz.dao.EventDAOImpl;
 import br.ufop.tomaz.dao.ProfessorDAOImpl;
 import br.ufop.tomaz.model.*;
@@ -60,6 +61,8 @@ public class FXMLAddEventController implements Initializable, AppScreen, EditScr
     @FXML
     private ComboBox<ClassE> cmbClass;
     @FXML
+    private ComboBox<Event> cmbLinkedEvent;
+    @FXML
     private ListView<Professor> availableProfessorsListView;
     @FXML
     private TableView<ProfessorWeight> compatibleProfessorsTabView;
@@ -79,6 +82,7 @@ public class FXMLAddEventController implements Initializable, AppScreen, EditScr
     public void initialize(URL location, ResourceBundle resources) {
         initComponents();
         initCmbClasses();
+        initCmbLinkedEvent();
         initListView();
         initTabCompatibleProfessors();
     }
@@ -277,6 +281,13 @@ public class FXMLAddEventController implements Initializable, AppScreen, EditScr
         cmbClass.getSelectionModel().select(-1);
         compatibleProfessors.forEach((p) -> availableProfessors.add(p.getProfessor()));
         compatibleProfessors.clear();
+    }
+
+    @FXML
+    private void initCmbLinkedEvent(){
+        EventDAO eventDAO = EventDAOImpl.getInstance();
+        List<Event> eventList = eventDAO.getAllEvents();
+        this.cmbLinkedEvent.getItems().addAll(eventList);
     }
 
 
