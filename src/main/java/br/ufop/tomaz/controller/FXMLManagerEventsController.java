@@ -10,6 +10,7 @@ import br.ufop.tomaz.util.FileUtils;
 import br.ufop.tomaz.util.Screen;
 import javafx.beans.value.ChangeListener;
 import javafx.collections.FXCollections;
+import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -25,44 +26,26 @@ import java.util.stream.Collectors;
 
 public class FXMLManagerEventsController implements Initializable, AppScreen {
 
-    @FXML
-    public MenuBar menubar;
-    @FXML
-    private Button btnClose;
-    @FXML
-    private Button btnAdd;
-    @FXML
-    private Button btnEdit;
-    @FXML
-    private Button btnDelete;
-    @FXML
-    private Button btnImport;
-    @FXML
-    private Button btnNoFilters;
-    @FXML
-    private Button btnExport;
-    @FXML
-    private ComboBox<String> cmbTag;
-    @FXML
-    private ComboBox<String> cmbClass;
-    @FXML
-    private ComboBox<String> cmbSubject;
-    @FXML
-    private ComboBox<String> cmbProfessor;
-    @FXML
-    private ListView<Event> eventsListView;
-    @FXML
-    private TextField edtSubject;
-    @FXML
-    private TextField edtTag;
-    @FXML
-    private TextField edtDuration;
-    @FXML
-    private TextField edtSearch;
-    @FXML
-    private TextField edtClass;
-    @FXML
-    private TableView<ProfessorWeight> tabCompatibleProfessors;
+    @FXML public MenuBar menubar;
+    @FXML private Button btnClose;
+    @FXML private Button btnAdd;
+    @FXML private Button btnEdit;
+    @FXML private Button btnDelete;
+    @FXML private Button btnImport;
+    @FXML private Button btnNoFilters;
+    @FXML private Button btnExport;
+    @FXML private Button btnImportLinkedEvents;
+    @FXML private ComboBox<String> cmbTag;
+    @FXML private ComboBox<String> cmbClass;
+    @FXML private ComboBox<String> cmbSubject;
+    @FXML private ComboBox<String> cmbProfessor;
+    @FXML private ListView<Event> eventsListView;
+    @FXML private TextField edtSubject;
+    @FXML private TextField edtTag;
+    @FXML private TextField edtDuration;
+    @FXML private TextField edtSearch;
+    @FXML private TextField edtClass;
+    @FXML private TableView<ProfessorWeight> tabCompatibleProfessors;
     private ObservableList<Event> events;
 
     @Override
@@ -78,6 +61,13 @@ public class FXMLManagerEventsController implements Initializable, AppScreen {
         //Init buttons
         btnDelete.disableProperty().bind(eventsListView.getSelectionModel().selectedItemProperty().isNull());
         btnEdit.disableProperty().bind(eventsListView.getSelectionModel().selectedItemProperty().isNull());
+        if(events.isEmpty()){
+            btnImportLinkedEvents.setDisable(true);
+        }
+        events.addListener((ListChangeListener<Event>) c -> {
+            if(!events.isEmpty())
+                btnImportLinkedEvents.setDisable(false);
+        });
 
         //Init combobox
         ChangeListener changeListener = (ob, ov, nv) -> {

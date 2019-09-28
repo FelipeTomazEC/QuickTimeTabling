@@ -37,44 +37,25 @@ import static javafx.collections.FXCollections.observableList;
 
 public class FXMLAddEventController implements Initializable, AppScreen, EditScreen {
 
-    @FXML
-    private MenuBar menubar;
-    @FXML
-    private Button btnClose;
-    @FXML
-    private Button btnConfirm;
-    @FXML
-    private Button btnClear;
-    @FXML
-    private Button btnCancel;
-    @FXML
-    private TextField edtSubject;
-    @FXML
-    private TextField edtTag;
-    @FXML
-    private Spinner<Integer> spnDuration;
-    @FXML
-    private Spinner<Integer> spnMinGap;
-    @FXML
-    private Spinner<Integer> spnMaxGap;
-    @FXML
-    private ComboBox<String> cmbSplit;
-    @FXML
-    private ComboBox<ClassE> cmbClass;
-    @FXML
-    private ComboBox<Event> cmbLinkedEvent;
-    @FXML
-    private ListView<Professor> availableProfessorsListView;
-    @FXML
-    private TableView<ProfessorWeight> compatibleProfessorsTabView;
-    @FXML
-    private TableColumn<ProfessorWeight, String> nameColumn;
-    @FXML
-    private TableColumn<ProfessorWeight, Spinner<Integer>> costColumn;
-    @FXML
-    private Button btnExclude;
-    @FXML
-    private Button btnInclude;
+    @FXML private MenuBar menubar;
+    @FXML private Button btnClose;
+    @FXML private Button btnConfirm;
+    @FXML private Button btnClear;
+    @FXML private Button btnCancel;
+    @FXML private TextField edtSubject;
+    @FXML private TextField edtTag;
+    @FXML private Spinner<Integer> spnDuration;
+    @FXML private Spinner<Integer> spnMinGap;
+    @FXML private Spinner<Integer> spnMaxGap;
+    @FXML private ComboBox<String> cmbSplit;
+    @FXML private ComboBox<ClassE> cmbClass;
+    @FXML private ComboBox<Event> cmbLinkedEvent;
+    @FXML private ListView<Professor> availableProfessorsListView;
+    @FXML private TableView<ProfessorWeight> compatibleProfessorsTabView;
+    @FXML private TableColumn<ProfessorWeight, String> nameColumn;
+    @FXML private TableColumn<ProfessorWeight, Spinner<Integer>> costColumn;
+    @FXML private Button btnExclude;
+    @FXML private Button btnInclude;
     private ObservableList<Professor> availableProfessors = observableArrayList();
     private ListProperty<ProfessorWeight> compatibleProfessors = new SimpleListProperty<>(observableArrayList());
     private Event editEvent;
