@@ -19,6 +19,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
 
 <BorderPane prefHeight="400.0" prefWidth="600.0" stylesheets="@../styles/screensMainStyle.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="br.ufop.tomaz.controller.FXMLManagerEventsController">
     <top>
@@ -48,6 +49,11 @@
                 <Button fx:id="btnDelete" mnemonicParsing="false" onAction="#deleteEvent" styleClass="button-buttonBar" text="Delete" />
                 <Button fx:id="btnImport" mnemonicParsing="false" onAction="#importEvents" styleClass="button-buttonBar" text="Import" />
             <Button fx:id="btnExport" mnemonicParsing="false" onAction="#exportEvents" styleClass="button-buttonBar" text="Export" />
+            <Button fx:id="btnImportLinkedEvents" mnemonicParsing="false" onAction="#importLinkedEvents" styleClass="button-buttonBar" text="Linked Events">
+               <font>
+                  <Font size="12.0" />
+               </font>
+            </Button>
             </buttons>
             <padding>
                 <Insets right="10.0" />

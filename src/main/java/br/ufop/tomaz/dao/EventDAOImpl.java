@@ -83,6 +83,21 @@ public class EventDAOImpl implements EventDAO {
     }
 
     @Override
+    public Event getEventBySubjectAndClass(String subject, String className) {
+        String sqlQuery = "SELECT E FROM Event E WHERE E.subject = :subject and E.classE =: classE";
+        ClassE classE = ClassDAOImpl.getInstance().getClassByName(className);
+        try {
+            TypedQuery<Event> query = entityManager.createQuery(sqlQuery, Event.class);
+            query.setParameter("subject", subject);
+            query.setParameter("classE", classE);
+            return query.getSingleResult();
+        } catch (PersistenceException e){
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    @Override
     public void updateEvent(Event event) {
         try {
             entityManager.getTransaction().begin();

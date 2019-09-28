@@ -273,6 +273,57 @@ public class FileUtils {
         writer.close();
     }
 
+    public void exportLinkedEvents(List<Event> eventList, File file) throws IOException{
+        List<Event> eventsWithLinkedEvent = eventList.stream()
+                .filter(event -> event.getLinkedEvent() != null)
+                .collect(Collectors.toList());
+        BufferedWriter writer = new BufferedWriter(new FileWriter(file));
+        String [] header = {"Class 1", "Subject 1", "Class 2", "Subject 2"};
+        CSVPrinter printer = new CSVPrinter(writer, CSVFormat.DEFAULT.withHeader(header).withDelimiter(';'));
+
+        eventsWithLinkedEvent.forEach(event -> {
+            Event linkedEvent = event.getLinkedEvent();
+            String class1 = event.getClassE().getName();
+            String subject1 = event.getSubject();
+            String class2 = linkedEvent.getClassE().getName();
+            String subject2 = linkedEvent.getSubject();
+
+            try {
+                printer.printRecord(class1, subject1, class2, subject2);
+            } catch (IOException e) {
+                System.err.println("Occurred some error when exporting linked events!");
+                e.printStackTrace();
+            }
+        });
+
+        printer.flush();
+        writer.flush();
+        printer.close();
+        writer.close();
+    }
+
+    public void importLinkedEvents(File file) throws IOException{
+        EventDAO eventDAO = EventDAOImpl.getInstance();
+        String [] header = {"Class 1", "Subject 1", "Class 2", "Subject 2"};
+        Reader in = new FileReader(file);
+        Iterable<CSVRecord> records = CSVFormat.DEFAULT
+                .withHeader(header)
+                .withDelimiter(';')
+                .withFirstRecordAsHeader()
+                .parse(in);
+
+        records.forEach(record -> {
+            String class1 = record.get("Class 1");
+            String subject1 = record.get("Subject 1");
+            String class2 = record.get("Class 2");
+            String subject2 = record.get("Subject 2");
+            Event event = eventDAO.getEventBySubjectAndClass(subject1, class1);
+            Event linkedEvent = eventDAO.getEventBySubjectAndClass(subject2, class2);
+            event.setLinkedEvent(linkedEvent);
+            eventDAO.updateEvent(event);
+        });
+    }
+
     public List<EventAssignment> importEventsAssignments(File solutionFile) throws IOException {
         List<EventAssignment> eventAssignments = new ArrayList<>();
         int eventIndex = 0;

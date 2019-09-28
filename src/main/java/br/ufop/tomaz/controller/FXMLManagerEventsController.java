@@ -235,10 +235,32 @@ public class FXMLManagerEventsController implements Initializable, AppScreen {
         if(exportFile != null){
             String filename = (exportFile.getName().endsWith(".csv")) ?
                     exportFile.getName() : exportFile.getName().concat(".csv");
+            String linkedEventsFilename = "linked".concat(filename);
             String separator = System.getProperty("file.separator");
-            String filepath = exportFile.getParent().concat(separator).concat(filename);
+            String eventsFilepath = exportFile.getParent().concat(separator).concat(filename);
+            String linkedEventsFilepath = exportFile.getParent().concat(separator).concat(linkedEventsFilename);
 
-            new FileUtils().exportEvents(events, new File(filepath));
+            FileUtils fileUtils = new FileUtils();
+            fileUtils.exportEvents(events, new File(eventsFilepath));
+            fileUtils.exportLinkedEvents(events, new File(linkedEventsFilepath));
+        }
+    }
+
+    @FXML
+    private void importLinkedEvents () {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.getExtensionFilters()
+                .add(new FileChooser.ExtensionFilter("Linked Events.csv", "*.csv"));
+        File eventsFile = fileChooser.showOpenDialog(App.getWindow());
+        if (eventsFile != null) {
+            FileUtils reader = new FileUtils();
+            try {
+                reader.importLinkedEvents(eventsFile);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        } else {
+            System.out.println("Occurred a problem when tried import the linked events. Please try again.");
         }
     }
 

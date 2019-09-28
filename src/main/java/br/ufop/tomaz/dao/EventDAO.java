@@ -16,6 +16,8 @@ public interface EventDAO {
 
     List<Event> getEventsByClass(ClassE classE);
 
+    Event getEventBySubjectAndClass(String subject, String className);
+
     void updateEvent(Event event);
 
     Event getEventById(Long id);

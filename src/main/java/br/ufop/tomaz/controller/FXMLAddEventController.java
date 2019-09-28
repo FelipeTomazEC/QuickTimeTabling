@@ -21,6 +21,7 @@ import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
+import javafx.util.Callback;
 
 
 import java.io.IOException;
@@ -119,7 +120,7 @@ public class FXMLAddEventController implements Initializable, AppScreen, EditScr
 
     @Override
     public void close() throws IOException {
-        App.setScreen(Screen.HOME);
+        App.setScreen(Screen.MANAGER_EVENTS);
     }
 
     @Override
@@ -139,6 +140,7 @@ public class FXMLAddEventController implements Initializable, AppScreen, EditScr
         List<Professor> compatibles = availableProfessors.filtered(professor -> compatible.contains(professor.getName()));
         availableProfessors.removeAll(compatibles);
         compatibleProfessors.setAll(editEvent.getProfessorWeights());
+        cmbLinkedEvent.getSelectionModel().select(editEvent.getLinkedEvent());
         configureConfirmEditionButton();
     }
 
@@ -149,6 +151,9 @@ public class FXMLAddEventController implements Initializable, AppScreen, EditScr
             editEvent.setClassE(cmbClass.getSelectionModel().getSelectedItem());
             editEvent.setProfessorWeights(compatibleProfessors);
             editEvent.setSplit(cmbSplit.getValue());
+            Event linkedEvent = (cmbLinkedEvent.getSelectionModel().getSelectedIndex() == 0)
+                    ? null : cmbLinkedEvent.getValue();
+            editEvent.setLinkedEvent(linkedEvent);
             EventDAOImpl.getInstance().updateEvent(editEvent);
             try {
                 close();
@@ -297,8 +302,27 @@ public class FXMLAddEventController implements Initializable, AppScreen, EditScr
         none.setSubject("None");
         cmbLinkedEvent.getItems().add(none);
         cmbLinkedEvent.getSelectionModel().select(none);
-        this.cmbLinkedEvent.getItems().addAll(eventList);
+        cmbLinkedEvent.getItems().addAll(eventList);
+        cmbLinkedEvent.setCellFactory(new Callback<>() {
+            @Override
+            public ListCell<Event> call(ListView<Event> param) {
+                return new ListCell<>() {
+                    @Override
+                    protected void updateItem(Event item, boolean empty) {
+                        super.updateItem(item, empty);
+                        if (item == null || empty) {
+                            setText(null);
+                        } else {
+                            String text = item.getSubject();
+                            ClassE classE = item.getClassE();
+                            text = (item.getSubject().equalsIgnoreCase("none"))
+                                    ? text : text.concat(" - ").concat(classE.getName());
+                            setText(text);
+                        }
+                    }
+                };
+            }
+        });
     }
-
 
 }

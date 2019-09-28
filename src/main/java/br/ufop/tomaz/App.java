@@ -1,7 +1,6 @@
 package br.ufop.tomaz;
 
 import br.ufop.tomaz.controller.interfaces.EditScreen;
-import br.ufop.tomaz.model.ClassE;
 import br.ufop.tomaz.model.Editable;
 import br.ufop.tomaz.util.Screen;
 import javafx.application.Application;
@@ -33,7 +32,7 @@ public class App extends Application {
     @Override
     public void start(Stage primaryStage) throws IOException {
         stage = primaryStage;
-        setScreen(Screen.ADD_EVENT);
+        setScreen(Screen.HOME);
     }
 
     public static void setScreen(Screen screen) throws IOException {
