@@ -13,4 +13,42 @@
         <time>18:50</time>
         <time>20:45</time>
     </times>
+    <constraints>
+        <constraint>
+            <type>Unavailable Times</type>
+            <applyTo>Classes, Professors</applyTo>
+            <weight>10</weight>
+            <info>Times that cannot be assign to the professor/class</info>
+        </constraint>
+        <constraint>
+            <type>Undesired Times</type>
+            <applyTo>Professors</applyTo>
+            <weight>0</weight>
+            <info>Times to avoid to allocate the professor.</info>
+        </constraint>
+        <constraint>
+            <type>Gap between meetings</type>
+            <applyTo>Events</applyTo>
+            <weight>10</weight>
+            <info>Minimum and Maximum gap between the meetings of an event.</info>
+        </constraint>
+        <constraint>
+            <type>Undesired Patterns</type>
+            <applyTo>Professor</applyTo>
+            <weight>0</weight>
+            <info>Undesired patterns of busy/free days in the week to the professor.</info>
+        </constraint>
+        <constraint>
+            <type>Number of busy days</type>
+            <applyTo>Professor</applyTo>
+            <weight>10</weight>
+            <info>Minimum and Maximum number of busy days in the week to the professor.</info>
+        </constraint>
+        <constraint>
+            <type>Split</type>
+            <applyTo>Event</applyTo>
+            <weight>10</weight>
+            <info>How the meetings of the event must be spread on the week.</info>
+        </constraint>
+    </constraints>
 </settings>
