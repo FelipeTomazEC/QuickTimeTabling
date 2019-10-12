@@ -15,7 +15,7 @@ public enum Screen {
     }
 
     public String getPath(){
-        String separator = System.getProperty("file.separator");
+        String separator = "/";
         return separator.concat("br")
                 .concat(separator)
                 .concat("ufop")
