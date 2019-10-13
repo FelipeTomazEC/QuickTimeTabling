@@ -2,15 +2,14 @@ package br.ufop.tomaz.controller;
 
 import br.ufop.tomaz.App;
 import br.ufop.tomaz.controller.interfaces.AppScreen;
-import br.ufop.tomaz.dao.ClassDAO;
-import br.ufop.tomaz.dao.ClassDAOImpl;
-import br.ufop.tomaz.dao.ProfessorDAO;
-import br.ufop.tomaz.dao.ProfessorDAOImpl;
-import br.ufop.tomaz.model.ClassE;
-import br.ufop.tomaz.model.EventAssignment;
-import br.ufop.tomaz.model.Professor;
-import br.ufop.tomaz.model.Resource;
+import br.ufop.tomaz.dao.*;
+import br.ufop.tomaz.model.*;
+import br.ufop.tomaz.services.SolutionGenerator;
 import br.ufop.tomaz.util.*;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
+import javafx.collections.ListChangeListener;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
@@ -60,10 +59,11 @@ public class FXMLTimeTablingController implements Initializable, AppScreen {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        this.assignments = readAssignments();
+        this.generateSolution();
+        //this.assignments = readAssignments();
         this.configureResourceListView();
         this.initTimeTabling();
-        this.initResourceComboBox();
+        //this.initResourceComboBox();
         this.initSearchBar();
     }
 
@@ -81,6 +81,11 @@ public class FXMLTimeTablingController implements Initializable, AppScreen {
     }
 
     private void initSearchBar(){
+        this.resourcesListView.getItems().addListener((ListChangeListener<Resource>) change -> {
+            boolean isEmpty = resourcesListView.getItems().isEmpty();
+            edtSearch.setDisable(isEmpty);
+        });
+
         this.edtSearch.textProperty()
                 .addListener(((ob, ov, nv) -> {
                     String resourceType = cbmResource.getSelectionModel().getSelectedItem();
@@ -164,4 +169,18 @@ public class FXMLTimeTablingController implements Initializable, AppScreen {
                 });
     }
 
+    private void generateSolution(){
+        //TODO -- Create function to generate the solution
+        List<Professor> professorList = ProfessorDAOImpl.getInstance().getProfessors();
+        List<ClassE> classList = ClassDAOImpl.getInstance().getClasses();
+        List<Event> eventList = EventDAOImpl.getInstance().getAllEvents();
+
+        try {
+            SolutionGenerator solutionGenerator = new SolutionGenerator(professorList, classList, eventList);
+            //solutionGenerator.getSolution(300.0);
+        } catch (IOException e) {
+            System.err.println("Occurred some error when trying to create Solution File!");
+            e.printStackTrace();
+        }
+    }
 }
