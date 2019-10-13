@@ -6,22 +6,18 @@ import br.ufop.tomaz.controller.interfaces.AppScreen;
 import br.ufop.tomaz.model.Constraint;
 import br.ufop.tomaz.services.AppSettings;
 import br.ufop.tomaz.util.Screen;
-import com.sun.xml.bind.v2.runtime.reflect.opt.Const;
-import javafx.beans.binding.Bindings;
-import javafx.beans.property.IntegerProperty;
-import javafx.beans.property.ObjectProperty;
-import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.util.Callback;
-import javafx.util.converter.NumberStringConverter;
 
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 public class FXMLManagerConstraintsController implements Initializable, AppScreen {
 
@@ -52,7 +48,7 @@ public class FXMLManagerConstraintsController implements Initializable, AppScree
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        constraintList = FXCollections.observableList(AppSettings.getInstance().getConstraintList());
+        constraintList = FXCollections.observableList(AppSettings.getInstance().getConstraintMap());
         initConstraintListView();
         initButtons();
         initWeightSpinner();
@@ -107,7 +103,7 @@ public class FXMLManagerConstraintsController implements Initializable, AppScree
                         if(item == null || empty){
                             setText("");
                         }else{
-                            setText(item.getType());
+                            setText(item.getTypeDescription());
                         }
                     }
                 };
@@ -129,7 +125,10 @@ public class FXMLManagerConstraintsController implements Initializable, AppScree
     @Override
     public void close() throws IOException {
         App.setScreen(Screen.HOME);
-        AppSettings.getInstance().setConstraintList(constraintList);
+        AppSettings.getInstance().setConstraintMap(
+                constraintList.stream()
+                        .collect(Collectors.toMap(Constraint::getType, Function.identity()))
+        );
         AppSettings.getInstance().saveSettings();
     }
 }

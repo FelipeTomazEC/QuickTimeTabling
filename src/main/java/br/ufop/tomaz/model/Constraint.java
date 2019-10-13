@@ -15,12 +15,14 @@ public class Constraint {
         setWeight(weight);
     }
 
-    public String getType() {
-        return type.getType();
+    public String getTypeDescription() {
+        return type.getTypeDescription();
     }
 
+    public  ConstraintType getType(){ return this.type; }
+
     public StringProperty typeProperty(){
-        return type.typeProperty();
+        return type.typeDescriptionProperty();
     }
 
     public void setType(ConstraintType type) {
@@ -68,22 +70,22 @@ public class Constraint {
         GAP_BETWEEN_MEETINGS("Gap Between Meetings"), SPLIT("Split"),
         UNDESIRED_PATTERNS("Undesired Patterns"), NUMBER_OF_BUSY_DAYS("Number of Busy Days");
 
-        private final StringProperty type = new SimpleStringProperty("");
+        private final StringProperty typeDescription = new SimpleStringProperty("");
 
-        ConstraintType (String type){
-            setType(type);
+        ConstraintType (String typeDescription){
+            setTypeDescription(typeDescription);
         }
 
-        public String getType() {
-            return type.get();
+        public String getTypeDescription() {
+            return typeDescription.get();
         }
 
-        public StringProperty typeProperty() {
-            return type;
+        public StringProperty typeDescriptionProperty() {
+            return typeDescription;
         }
 
-        public void setType(String type) {
-            this.type.set(type);
+        public void setTypeDescription(String typeDescription) {
+            this.typeDescription.set(typeDescription);
         }
     }
 }

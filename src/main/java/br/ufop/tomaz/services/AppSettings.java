@@ -2,6 +2,7 @@ package br.ufop.tomaz.services;
 
 import br.ufop.tomaz.App;
 import br.ufop.tomaz.model.Constraint;
+import br.ufop.tomaz.model.Constraint.ConstraintType;
 import org.jdom2.Document;
 import org.jdom2.Element;
 import org.jdom2.JDOMException;
@@ -11,13 +12,13 @@ import org.jdom2.output.XMLOutputter;
 import br.ufop.tomaz.util.Day;
 
 import java.io.*;
-import java.net.URL;
-import java.net.URLDecoder;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 public class AppSettings {
@@ -25,14 +26,14 @@ public class AppSettings {
     private static AppSettings appSettings = null;
     private List<String> daysList;
     private List<String> timesList;
-    private List<Constraint> constraintList;
+    private Map<ConstraintType, Constraint> constraintMap;
 
     private AppSettings() {
         try {
             File settingsFiles = getSettingsFile();
             this.daysList = getDaysListFromXML(settingsFiles);
             this.timesList = getTimesListFromXML(settingsFiles);
-            this.constraintList = getConstraintListFromXML(settingsFiles);
+            this.constraintMap = getConstraintListFromXML(settingsFiles);
         } catch (NullPointerException e) {
             e.printStackTrace();
         }
@@ -49,7 +50,7 @@ public class AppSettings {
         Document documentXML = new Document(settingsXML);
         settingsXML.addContent(getDaysXML(this.daysList));
         settingsXML.addContent(getTimesXML(this.timesList));
-        settingsXML.addContent(getConstraintsXML(this.constraintList));
+        settingsXML.addContent(getConstraintsXML(this.constraintMap));
         XMLOutputter xmlOutputter = new XMLOutputter();
         xmlOutputter.setFormat(Format.getPrettyFormat());
         try {
@@ -125,7 +126,7 @@ public class AppSettings {
         }
     }
 
-    private List<Constraint> getConstraintListFromXML(File settingsFile) {
+    private Map<ConstraintType, Constraint> getConstraintListFromXML(File settingsFile) {
         SAXBuilder builder = new SAXBuilder();
 
         try{
@@ -135,7 +136,7 @@ public class AppSettings {
             return constraints.getChildren()
                     .stream()
                     .map(this::getConstraintFromXML)
-                    .collect(Collectors.toList());
+                    .collect(Collectors.toMap(Constraint::getType, Function.identity()));
         } catch (JDOMException | IOException e) {
             e.printStackTrace();
             return null;
@@ -153,8 +154,8 @@ public class AppSettings {
         return new Constraint(type, applyTo, info, weight);
     }
 
-    private Element getConstraintsXML(List<Constraint> constraintList){
-        List<Element> constraintsXml = constraintList.stream()
+    private Element getConstraintsXML(Map<ConstraintType, Constraint> constraintMap){
+        List<Element> constraintsXml = constraintMap.values().stream()
                 .map(constraint -> {
                     Element weight = new Element("weight");
                     Element info = new Element("info");
@@ -164,7 +165,7 @@ public class AppSettings {
                     weight.setText(String.valueOf(constraint.getWeight()));
                     info.setText(constraint.getInfo());
                     applyTo.setText(constraint.getApplyTo());
-                    type.setText(constraint.getType());
+                    type.setText(constraint.getTypeDescription());
 
                     return new Element("constraint").addContent(Arrays.asList(type, applyTo, weight, info));
                 }).collect(Collectors.toList());
@@ -188,12 +189,12 @@ public class AppSettings {
         this.timesList = timesList;
     }
 
-    public List<Constraint> getConstraintList() {
-        return constraintList;
+    public List<Constraint> getConstraintMap() {
+        return new ArrayList<>(constraintMap.values());
     }
 
-    public void setConstraintList(List<Constraint> constraintList) {
-        this.constraintList = constraintList;
+    public void setConstraintMap(Map<ConstraintType, Constraint> constraintMap) {
+        this.constraintMap = constraintMap;
     }
 
     public List<Day> defaultDays() {
