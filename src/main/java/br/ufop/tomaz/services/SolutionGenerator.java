@@ -11,6 +11,7 @@ import br.ufop.tomaz.model.Constraint.ConstraintType;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -45,42 +46,62 @@ public class SolutionGenerator {
     }
 
     public File getSolution(double timeToSolve) {
-        String commandLine = getCommandLine();
-        try {
-            Process process = Runtime.getRuntime().exec(commandLine);
-            process.waitFor();
-            System.out.println(commandLine);
-            System.out.println("Exit code: "+ process.exitValue());
-            InputStream error = process.getErrorStream();
-            StringBuilder errorMessage = new StringBuilder();
-            for (int i = 0; i < error.available(); i++) {
-                errorMessage.append((char)error.read());
-            }
-            System.out.println(errorMessage);
-            Thread.sleep(3000);
-            process.destroy();
-        } catch (IOException | InterruptedException e) {
-            e.printStackTrace();
-        }
+        this.executeET3();
+        //TODO -- Create the functions to generate other files.
         return null;
     }
 
-    private String getCommandLine(){
+    private void executeET3(){
         Map<ConstraintType, Constraint> constraintSettings = AppSettings.getInstance().getConstraintMap();
         String solverPath = this.getClass()
                 .getResource("/solver/ET3.jar")
                 .getFile()
                 .replaceFirst("/","");
+        String argument1 = "\"" + SOLUTION_TEMPORARY_FILES_DIR + "\"";
         String argument2 = String.valueOf(constraintSettings.get(ConstraintType.PROFESSORS_COST).getWeight());
         String argument3 = String.valueOf(constraintSettings.get(ConstraintType.NUMBER_OF_BUSY_DAYS).getWeight());
         String argument4 = String.valueOf(constraintSettings.get(ConstraintType.UNDESIRED_TIMES).getWeight());
         String argument5 = String.valueOf(constraintSettings.get(ConstraintType.UNDESIRED_PATTERNS).getWeight());
+        String [] flags = {"-jar"};
+        String [] args = {solverPath, argument1, argument2, argument3, argument4, argument5};
+        String commandLine = buildCommandLine("java", flags, args);
 
-        return "java -jar ".concat(solverPath)
-                .concat(" ").concat("\""+SOLUTION_TEMPORARY_FILES_DIR+"\"")
-                .concat(" ").concat(argument2)
-                .concat(" ").concat(argument3)
-                .concat(" ").concat(argument4)
-                .concat(" ").concat(argument5);
+        this.executeProcess(commandLine);
+    }
+
+    private String buildCommandLine(String program, String [] flags, String [] args) {
+        StringBuilder builder = new StringBuilder();
+        builder.append(program);
+        builder.append(Arrays.stream(flags).reduce("",(s, s2) -> s.concat(" ").concat(s2)));
+        builder.append(Arrays.stream(args).reduce("",(s, s2) -> s.concat(" ").concat(s2)));
+
+        return builder.toString().trim();
+    }
+
+    private boolean executeProcess(String commandLine) {
+        try {
+            Process process = Runtime.getRuntime().exec(commandLine);
+            process.waitFor();
+
+            if(process.exitValue() != 0){
+                InputStream error = process.getErrorStream();
+                StringBuilder errorMessage = new StringBuilder();
+                for (int i = 0; i < error.available(); i++) {
+                    errorMessage.append((char)error.read());
+                }
+                System.out.println(errorMessage);
+                Thread.sleep(2000);
+                process.destroy();
+                return false;
+            } else {
+                Thread.sleep(2000);
+                process.destroy();
+                return true;
+            }
+
+        } catch (IOException | InterruptedException e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 }
