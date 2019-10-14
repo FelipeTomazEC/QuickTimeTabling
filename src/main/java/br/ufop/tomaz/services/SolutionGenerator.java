@@ -49,8 +49,16 @@ public class SolutionGenerator {
         try {
             Process process = Runtime.getRuntime().exec(commandLine);
             process.waitFor();
+            System.out.println(commandLine);
             System.out.println("Exit code: "+ process.exitValue());
-            //InputStream err = process.getErrorStream();
+            InputStream error = process.getErrorStream();
+            StringBuilder errorMessage = new StringBuilder();
+            for (int i = 0; i < error.available(); i++) {
+                errorMessage.append((char)error.read());
+            }
+            System.out.println(errorMessage);
+            Thread.sleep(3000);
+            process.destroy();
         } catch (IOException | InterruptedException e) {
             e.printStackTrace();
         }
@@ -59,14 +67,17 @@ public class SolutionGenerator {
 
     private String getCommandLine(){
         Map<ConstraintType, Constraint> constraintSettings = AppSettings.getInstance().getConstraintMap();
-        String solverPath = this.getClass().getResource("/solver/ET3.jar").getPath();
+        String solverPath = this.getClass()
+                .getResource("/solver/ET3.jar")
+                .getFile()
+                .replaceFirst("/","");
         String argument2 = String.valueOf(constraintSettings.get(ConstraintType.PROFESSORS_COST).getWeight());
         String argument3 = String.valueOf(constraintSettings.get(ConstraintType.NUMBER_OF_BUSY_DAYS).getWeight());
         String argument4 = String.valueOf(constraintSettings.get(ConstraintType.UNDESIRED_TIMES).getWeight());
         String argument5 = String.valueOf(constraintSettings.get(ConstraintType.UNDESIRED_PATTERNS).getWeight());
 
         return "java -jar ".concat(solverPath)
-                .concat(" ").concat(SOLUTION_TEMPORARY_FILES_DIR)
+                .concat(" ").concat("\""+SOLUTION_TEMPORARY_FILES_DIR+"\"")
                 .concat(" ").concat(argument2)
                 .concat(" ").concat(argument3)
                 .concat(" ").concat(argument4)
