@@ -68,7 +68,8 @@ public class Constraint {
     public enum ConstraintType {
         UNDESIRED_TIMES("Undesired Times"), UNAVAILABLE_TIMES("Unavailable Times"),
         GAP_BETWEEN_MEETINGS("Gap Between Meetings"), SPLIT("Split"),
-        UNDESIRED_PATTERNS("Undesired Patterns"), NUMBER_OF_BUSY_DAYS("Number of Busy Days");
+        UNDESIRED_PATTERNS("Undesired Patterns"), NUMBER_OF_BUSY_DAYS("Number of Busy Days"),
+        PROFESSORS_COST("Professors Cost");
 
         private final StringProperty typeDescription = new SimpleStringProperty("");
 

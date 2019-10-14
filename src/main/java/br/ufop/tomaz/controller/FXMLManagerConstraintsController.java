@@ -48,7 +48,7 @@ public class FXMLManagerConstraintsController implements Initializable, AppScree
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        constraintList = FXCollections.observableList(AppSettings.getInstance().getConstraintMap());
+        constraintList = FXCollections.observableList(AppSettings.getInstance().getConstraintList());
         initConstraintListView();
         initButtons();
         initWeightSpinner();

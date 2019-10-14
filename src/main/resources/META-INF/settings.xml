@@ -50,5 +50,11 @@
             <weight>10</weight>
             <info>How the meetings of the event must be spread on the week.</info>
         </constraint>
+        <constraint>
+            <type>Professors Cost</type>
+            <applyTo>Professor</applyTo>
+            <weight>2</weight>
+            <info>Multiplicative factor for professor penalties.</info>
+        </constraint>
     </constraints>
 </settings>

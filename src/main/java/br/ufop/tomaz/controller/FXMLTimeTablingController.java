@@ -177,7 +177,7 @@ public class FXMLTimeTablingController implements Initializable, AppScreen {
 
         try {
             SolutionGenerator solutionGenerator = new SolutionGenerator(professorList, classList, eventList);
-            //solutionGenerator.getSolution(300.0);
+            solutionGenerator.getSolution(300.0);
         } catch (IOException e) {
             System.err.println("Occurred some error when trying to create Solution File!");
             e.printStackTrace();

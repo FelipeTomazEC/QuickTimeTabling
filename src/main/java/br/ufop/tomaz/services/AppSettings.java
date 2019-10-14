@@ -189,8 +189,12 @@ public class AppSettings {
         this.timesList = timesList;
     }
 
-    public List<Constraint> getConstraintMap() {
+    public List<Constraint> getConstraintList() {
         return new ArrayList<>(constraintMap.values());
+    }
+
+    public Map<ConstraintType, Constraint> getConstraintMap() {
+        return constraintMap;
     }
 
     public void setConstraintMap(Map<ConstraintType, Constraint> constraintMap) {
